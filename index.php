@@ -2,43 +2,44 @@
 // показывать или нет выполненные задачи
 $show_complete_tasks = rand(0, 1);
 $projects = ['«Входящие»', '«Учеба»', '«Работа»', '«Домашние дела»', '«Авто»'];
-$first_task = [
-    'task' => 'Собеседование в IT компании',
-    'completeDate' => '01.12.2018',
-    'category' => 'Работа',
-    'state' => 'Нет'
+$task_list = [
+    [
+        'nameTask' => 'Собеседование в IT компании',
+        'completeDate' => '01.12.2018',
+        'category' => 'Работа',
+        'state' => 'Нет'
+    ],
+    [
+        'nameTask' => 'Выполнить тестовое задание',
+        'completeDate' => '25.12.2018',
+        'category' => 'Работа',
+        'state' => 'Нет'
+    ],
+    [
+        'nameTask' => 'Сделать задание первого раздела',
+        'completeDate' => '21.12.2018',
+        'category' => 'Учеба',
+        'state' => 'Да'
+    ],
+    [
+        'nameTask' => 'Встреча с другом',
+        'completeDate' => '22.12.2018',
+        'category' => 'Входящие',
+        'state' => 'Нет'
+    ],
+    [
+        'nameTask' => 'Купить корм для кота',
+        'completeDate' => 'Нет',
+        'category' => 'Домашние дела',
+        'state' => 'Нет'
+    ],
+    [
+        'nameTask' => 'Заказать пиццу',
+        'completeDate' => 'Нет',
+        'category' => 'Домашние дела',
+        'state' => 'Нет'
+    ]
 ];
-$second_task = [
-    'task' => 'Выполнить тестовое задание',
-    'completeDate' => '25.12.2018',
-    'category' => 'Работа',
-    'state' => 'Нет'
-];
-$third_task = [
-    'task' => 'Сделать задание первого раздела',
-    'completeDate' => '21.12.2018',
-    'category' => 'Учеба',
-    'state' => 'Да'
-];
-$fourth_task = [
-    'task' => 'Встреча с другом',
-    'completeDate' => '22.12.2018',
-    'category' => 'Входящие',
-    'state' => 'Нет'
-];
-$fifth_task = [
-    'task' => 'Купить корм для кота',
-    'completeDate' => 'Нет',
-    'category' => 'Домашние дела',
-    'state' => 'Нет'
-];
-$sixth_task = [
-    'task' => 'Заказать пиццу',
-    'completeDate' => 'Нет',
-    'category' => 'Домашние дела',
-    'state' => 'Нет'
-];
-$task_list = [$first_task, $second_task, $third_task, $fourth_task, $fifth_task, $sixth_task];
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -80,9 +81,9 @@ $task_list = [$first_task, $second_task, $third_task, $fourth_task, $fifth_task,
 
                 <nav class="main-navigation">
                     <ul class="main-navigation__list">
-                        <?php foreach ($projects as $val): ?>
+                        <?php foreach ($projects as $project): ?>
                             <li class="main-navigation__list-item">
-                                <a class="main-navigation__list-item-link" href="#"><?=$val; ?></a>
+                                <a class="main-navigation__list-item-link" href="#"><?=$project; ?></a>
                                 <span class="main-navigation__list-item-count">0</span>
                             </li>
                         <?php endforeach; ?>
@@ -132,20 +133,20 @@ $task_list = [$first_task, $second_task, $third_task, $fourth_task, $fifth_task,
 
                         <td class="task__date"></td>
                     </tr>
-                    <?php foreach ($task_list as $key => $val):?>
+                    <?php foreach ($task_list as $task):?>
                     <!--показывать следующий тег <tr/>, если переменная $show_complete_tasks равна единице-->
-                    <?php if (($show_complete_tasks === 1) or ($show_complete_tasks === 0 and $val['state'] === 'Нет')): ?>
-                        <tr class="tasks__item task <?=$val['state'] === 'Да' ? "task--completed" : '';?>">
-                            <td class="task__select">
-                                <label class="checkbox task__checkbox">
-                                    <input class="checkbox__input visually-hidden" type="checkbox">
-                                    <span class="checkbox__text"><?=$val['task']; ?></span>
-                                </label>
-                            </td>
-                            <td class="task__date"><?=$val['completeDate']; ?></td>
-                            <td class="task__controls"><?=$val['state']; ?></td>
-                        </tr>
-                    <?php endif; ?>
+                        <?php if (($show_complete_tasks === 1) or ($show_complete_tasks === 0 && $task['state'] === 'Нет')): ?>
+                            <tr class="tasks__item task <?=$task['state'] === 'Да' ? "task--completed" : '';?>">
+                                <td class="task__select">
+                                    <label class="checkbox task__checkbox">
+                                        <input class="checkbox__input visually-hidden" type="checkbox">
+                                        <span class="checkbox__text"><?=$task['nameTask']; ?></span>
+                                    </label>
+                                </td>
+                                <td class="task__date"><?=$task['completeDate']; ?></td>
+                                <td class="task__controls"><?=$task['state']; ?></td>
+                            </tr>
+                        <?php endif; ?>
                     <?php endforeach; ?>
                 </table>
             </main>
