@@ -1,7 +1,7 @@
 <?php
 // показывать или нет выполненные задачи
 $show_complete_tasks = rand(0, 1);
-$projects = ['«Входящие»', '«Учеба»', '«Работа»', '«Домашние дела»', '«Авто»'];
+$projects = ['Входящие', 'Учеба', 'Работа', 'Домашние дела', 'Авто'];
 $task_list = [
     [
         'nameTask' => 'Собеседование в IT компании',
@@ -43,11 +43,12 @@ $task_list = [
 
 function calculateTask($tasks, $nameProject) {
     $result = 0;
-    foreach ($tasks as ['category' => $category]) {
-      if ($category === $nameProject) {
+    foreach ($tasks as $task) {
+      if ($task['category'] === $nameProject) {
         $result +=1;
       }
-    } return print($result);
+    }
+    return $result;
   }
 ?>
 <!DOCTYPE html>
@@ -93,7 +94,7 @@ function calculateTask($tasks, $nameProject) {
                         <?php foreach ($projects as $project): ?>
                             <li class="main-navigation__list-item">
                                 <a class="main-navigation__list-item-link" href="#"><?=$project; ?></a>
-                                <span class="main-navigation__list-item-count"><?php  calculateTask($task_list, $project); ?></span>
+                                <span class="main-navigation__list-item-count"><?=calculateTask($task_list, $project); ?></span>
                             </li>
                         <?php endforeach; ?>
                     </ul>
