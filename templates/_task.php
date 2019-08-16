@@ -1,4 +1,4 @@
-<tr class="tasks__item task <?=$task['state'] === 'Да' ? "task--completed" : '';?>">
+<tr class="tasks__item task <?=$task['state'] === 'Да' ? "task--completed" : '';?> <?=hoursDiff($task['completeDate']) <= 24 ? "task--important" : '';?>">
     <td class="task__select">
         <label class="checkbox task__checkbox">
             <input class="checkbox__input visually-hidden" type="checkbox">
