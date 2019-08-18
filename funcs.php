@@ -10,11 +10,9 @@ function calculateTask($tasks, $nameProject) {
     return $result;
   }
 
-  function hoursDiff($completeDate)
-  {
-    $ts = time();
+  function hoursDiff($completeDate) {
     $endTs = strtotime($completeDate);
-    $secsToEndTask = $endTs - $ts;
+    $secsToEndTask = $endTs - time();
     $hours = floor($secsToEndTask / 3600);
     return $hours;
   }
