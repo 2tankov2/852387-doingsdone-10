@@ -1,9 +1,9 @@
 <?php
 
-function calculateTask($tasks, $nameProject) {
+function calculateTask($tasks, $project_id) {
     $result = 0;
     foreach ($tasks as $task) {
-      if ($task['category'] === $nameProject) {
+      if ($task['project_id'] === $project_id) {
         $result +=1;
       }
     }
