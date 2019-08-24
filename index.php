@@ -3,39 +3,32 @@
 require_once('helpers.php');
 require_once('funcs.php');
 require_once('data.php');
-require_once('config.php');
 require_once('init.php');
 
 if (!$link) {
-    print($error_content);
+    die('Ошибка подключения к БД');
 }
-else {
-    $sql = 'SELECT * FROM projects WHERE user_id = 3';
-    $result = mysqli_query($link, $sql);
 
-    if ($result) {
-        $projects = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    }
-    else {
-        $error = mysqli_error($link);
-        $content = include_template('error.php', ['error' => $error]);
-        $error  = include_template(('layout.php'), [
-            'content' => $content,
-            'title' => 'Дела в порядке - Главная страница'
-        ]);
-        print($error);
-    }
+$sql = 'SELECT * FROM projects WHERE user_id = 3';
+$result = mysqli_query($link, $sql);
 
-    $sql = 'SELECT * FROM tasks WHERE user_id = 3';
-
-    if ($res = mysqli_query($link, $sql)) {
-    $tasks = mysqli_fetch_all($res, MYSQLI_ASSOC);
-    }
-
-    else {
-    $content = include_template('error.php', ['error' => mysqli_error($link)]);
-    }
+if (!$result) {
+    $error = mysqli_error($link);
+    die($error);
 }
+
+$projects = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+$sql = 'SELECT * FROM tasks WHERE user_id = 3';
+
+$res = mysqli_query($link, $sql);
+
+if (!$res) {
+    $error = mysqli_error($link);
+    die($error);
+}
+
+$tasks = mysqli_fetch_all($res, MYSQLI_ASSOC);
 
 $page_content = include_template('main.php', [
     'projects' => $projects,
@@ -48,20 +41,4 @@ $layout_content = include_template('layout.php', [
 	'title' => 'Дела в порядке - Главная страница'
 ]);
 
-$off_content = include_template(('layout.php'), [
-    'content' => include_template('off.php'),
-	'title' => 'Дела в порядке - Главная страница'
-]);
-
-$error_content  = include_template(('layout.php'), [
-    'content' => include_template('error.php', [
-        'error' => mysqli_connect_error()]),
-	'title' => 'Дела в порядке - Главная страница'
-]);
-
-if ($config['enable']) {
-	print($layout_content);
-}
-else {
-	print($off_content);
-}
+print($layout_content);

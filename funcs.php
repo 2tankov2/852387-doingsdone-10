@@ -16,3 +16,7 @@ function calculateTask($tasks, $project_id) {
     $hours = floor($secsToEndTask / 3600);
     return $hours;
   }
+
+  function isExpiringTask($date) {
+    return hoursDiff($date) <= 24 ? "task--important" : '';
+  }
