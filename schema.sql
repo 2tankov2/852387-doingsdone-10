@@ -8,8 +8,7 @@ CREATE TABLE `projects` (
   `id` INT unsigned NOT NULL AUTO_INCREMENT,
   `name` CHAR(255) NOT NULL,
   `user_id` INT unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `tasks` (
@@ -20,7 +19,7 @@ CREATE TABLE `tasks` (
   `state` TINYINT DEFAULT '0',
   `name` CHAR(255) NOT NULL,
   `file_url` CHAR(255),
-  `complete_date` DATE,
+  `complete_date` DATE DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

@@ -5,9 +5,9 @@
             <?php foreach ($projects as $project): ?>
                 <li class="main-navigation__list-item">
                     <a class="main-navigation__list-item-link" href="#">
-                        <?=htmlspecialchars($project); ?>
+                        <?=htmlspecialchars($project['name']); ?>
                     </a>
-                    <span class="main-navigation__list-item-count"><?=calculateTask($task_list, $project); ?></span>
+                    <span class="main-navigation__list-item-count"><?=calculateTask($task_list, $project['id']); ?></span>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -56,7 +56,7 @@
         </tr>
         <?php foreach ($task_list as $task):?>
             <!--показывать следующий тег <tr/>, если переменная $show_complete_tasks равна единице-->
-            <?php if (($show_complete_tasks === 1) or ($show_complete_tasks === 0 && $task['state'] === 'Нет')): ?>
+            <?php if (($show_complete_tasks === 1) or ($show_complete_tasks === 0 && $task['state'] === '0')): ?>
                 <?=include_template('_task.php', ['task' => $task]); ?>
             <?php endif; ?>
         <?php endforeach; ?>

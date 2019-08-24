@@ -1,10 +1,10 @@
-<tr class="tasks__item task <?=$task['state'] === 'Да' ? "task--completed" : '';?> <?=hoursDiff($task['completeDate']) <= 24 ? "task--important" : '';?>">
+<tr class="tasks__item task <?=$task['state'] === '1' ? "task--completed" : '';?> <?=isExpiringTask($task['complete_date']); ?>">
     <td class="task__select">
         <label class="checkbox task__checkbox">
             <input class="checkbox__input visually-hidden" type="checkbox">
-            <span class="checkbox__text"><?=htmlspecialchars($task['nameTask']); ?></span>
+            <span class="checkbox__text"><?=htmlspecialchars($task['name']); ?></span>
         </label>
     </td>
-    <td class="task__date"><?=htmlspecialchars($task['completeDate']); ?></td>
-    <td class="task__controls"><?=htmlspecialchars($task['state']); ?></td>
+    <td class="task__date"><?=htmlspecialchars($task['complete_date']); ?></td>
+    <td class="task__controls"></td>
 </tr>
