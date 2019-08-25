@@ -18,5 +18,5 @@ function calculateTask($tasks, $project_id) {
   }
 
   function isExpiringTask($date) {
-    return hoursDiff($date) <= 24 ? "task--important" : '';
+    return hoursDiff($date) <= 24;
   }

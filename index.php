@@ -13,19 +13,34 @@ $sql = 'SELECT * FROM projects WHERE user_id = 3';
 $result = mysqli_query($link, $sql);
 
 if (!$result) {
-    $error = mysqli_error($link);
-    die($error);
+    die(mysqli_error($link));
 }
 
 $projects = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-$sql = 'SELECT * FROM tasks WHERE user_id = 3';
+if (!isset($_GET['id'])) {
+    $sql = 'SELECT * FROM tasks WHERE user_id = 3';
+    $res = mysqli_query($link, $sql);
+} else {
+    if ($_GET['id'] <= 11 && $_GET['id'] >= 6) {
+        $id = mysqli_real_escape_string($link, $_GET['id']);
+        // запрос на показ задач по ID проекта
+        $sql = "SELECT * FROM tasks WHERE project_id = '%s'";
+        $sql = sprintf($sql, $id);
+        $res = mysqli_query($link, $sql);
 
-$res = mysqli_query($link, $sql);
+        if (!$res) {
+            die(mysqli_error($link));
+        }
 
-if (!$res) {
-    $error = mysqli_error($link);
-    die($error);
+        if (!mysqli_num_rows($res)) {
+            http_response_code(404);
+            die('Задач с этим идентификатором проекта не найдено');
+        }
+    } else {
+      http_response_code(404);
+        die('Задач с этим идентификатором проекта не найдено');
+    }
 }
 
 $tasks = mysqli_fetch_all($res, MYSQLI_ASSOC);

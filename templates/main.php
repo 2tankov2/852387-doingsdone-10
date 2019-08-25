@@ -4,7 +4,7 @@
         <ul class="main-navigation__list">
             <?php foreach ($projects as $project): ?>
                 <li class="main-navigation__list-item">
-                    <a class="main-navigation__list-item-link" href="#">
+                    <a class="main-navigation__list-item-link <?=($_GET['id'] === $project['id']) ? 'main-navigation__list-item--active' : ''; ?>" href="/index.php?id=<?=$project['id']; ?>">
                         <?=htmlspecialchars($project['name']); ?>
                     </a>
                     <span class="main-navigation__list-item-count"><?=calculateTask($task_list, $project['id']); ?></span>
