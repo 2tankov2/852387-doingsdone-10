@@ -22,9 +22,9 @@ if (!isset($_GET['id'])) {
     $sql = 'SELECT * FROM tasks WHERE user_id = 3';
     $res = mysqli_query($link, $sql);
 } else {
-    if ($_GET['id'] <= 11 && $_GET['id'] >= 6) {
+
+    if (in_array($_GET['id'], getId($projects))) {
         $id = mysqli_real_escape_string($link, $_GET['id']);
-        // запрос на показ задач по ID проекта
         $sql = "SELECT * FROM tasks WHERE project_id = '%s'";
         $sql = sprintf($sql, $id);
         $res = mysqli_query($link, $sql);
@@ -35,11 +35,11 @@ if (!isset($_GET['id'])) {
 
         if (!mysqli_num_rows($res)) {
             http_response_code(404);
-            die('Задач с этим идентификатором проекта не найдено');
+            die();
         }
     } else {
       http_response_code(404);
-        die('Задач с этим идентификатором проекта не найдено');
+     die();
     }
 }
 

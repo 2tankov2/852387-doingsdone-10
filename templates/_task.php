@@ -6,5 +6,4 @@
         </label>
     </td>
     <td class="task__date"><?=htmlspecialchars($task['complete_date']); ?></td>
-    <td class="task__controls"></td>
 </tr>

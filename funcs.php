@@ -10,13 +10,20 @@ function calculateTask($tasks, $project_id) {
     return $result;
   }
 
-  function hoursDiff($completeDate) {
+function hoursDiff($completeDate) {
     $endTs = strtotime($completeDate);
     $secsToEndTask = $endTs - time();
     $hours = floor($secsToEndTask / 3600);
     return $hours;
-  }
+}
 
-  function isExpiringTask($date) {
+function isExpiringTask($date) {
     return hoursDiff($date) <= 24;
-  }
+}
+
+function getId($data) {
+    return array_reduce($data, function($acc, $val) {
+        $acc[] = $val['id'];
+        return $acc;
+    });
+}
