@@ -1,15 +1,5 @@
 <?php
 
-function calculateTask($tasks, $project_id) {
-    $result = 0;
-    foreach ($tasks as $task) {
-      if ($task['project_id'] === $project_id) {
-        $result +=1;
-      }
-    }
-    return $result;
-  }
-
 function hoursDiff($completeDate) {
     $endTs = strtotime($completeDate);
     $secsToEndTask = $endTs - time();
@@ -19,11 +9,4 @@ function hoursDiff($completeDate) {
 
 function isExpiringTask($date) {
     return hoursDiff($date) <= 24;
-}
-
-function getId($data) {
-    return array_reduce($data, function($acc, $val) {
-        $acc[] = $val['id'];
-        return $acc;
-    });
 }

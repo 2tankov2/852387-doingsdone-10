@@ -9,7 +9,8 @@ if (!$link) {
     die('Ошибка подключения к БД');
 }
 
-$sql = 'SELECT * FROM projects WHERE user_id = 3';
+$sql = 'SELECT p.id, p.name, p.user_id, COUNT(t.id) AS tasks_count FROM projects p
+JOIN tasks t ON p.id = t.project_id WHERE p.user_id = 3 GROUP BY t.project_id ';
 $result = mysqli_query($link, $sql);
 
 if (!$result) {
@@ -22,24 +23,18 @@ if (!isset($_GET['id'])) {
     $sql = 'SELECT * FROM tasks WHERE user_id = 3';
     $res = mysqli_query($link, $sql);
 } else {
+    $id = mysqli_real_escape_string($link, $_GET['id']);
+    $sql = "SELECT * FROM tasks WHERE project_id = '%s'";
+    $sql = sprintf($sql, $id);
+    $res = mysqli_query($link, $sql);
 
-    if (in_array($_GET['id'], getId($projects))) {
-        $id = mysqli_real_escape_string($link, $_GET['id']);
-        $sql = "SELECT * FROM tasks WHERE project_id = '%s'";
-        $sql = sprintf($sql, $id);
-        $res = mysqli_query($link, $sql);
+    if (!$res) {
+        die(mysqli_error($link));
+    }
 
-        if (!$res) {
-            die(mysqli_error($link));
-        }
-
-        if (!mysqli_num_rows($res)) {
-            http_response_code(404);
-            die();
-        }
-    } else {
-      http_response_code(404);
-     die();
+    if (!mysqli_num_rows($res)) {
+        http_response_code(404);
+        die();
     }
 }
 
