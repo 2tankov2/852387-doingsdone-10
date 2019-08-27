@@ -16,16 +16,17 @@ INSERT INTO tasks (user_id, project_id, state, name)
 VALUES (1, 4, 0, 'Купить корм для кота'),
        (1, 4, 0, 'Заказать пиццу');
 
-SELECT * FROM projects WHERE user_id = 2;
-
-SELECT * FROM tasks WHERE project_id = 1;
+/*
+ * SELECT * FROM projects WHERE user_id = 2;
+ * SELECT * FROM tasks WHERE project_id = 1;
+*/
 
 UPDATE tasks SET state = 1 WHERE id = 2;
 
 UPDATE tasks SET name = 'Купить корм для собаки' WHERE id = 5;
 
 INSERT INTO projects (name, user_id)
-VALUES ('Спорт', '3'), ('Учеба', 3), ('Прочее', 3), ('Домашние дела', 3), ('Авто', 3);
+VALUES ('Спорт', '3'), ('Учеба', 3), ('Прочее', 3), ('Домашние дела', 3), ('Авто', 3), ('Мечта', 3);
 
 INSERT INTO users (email, name, password)
 VALUES ('krot83@mail.ru', 'Лена', 'grot2206');

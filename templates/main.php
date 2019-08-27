@@ -3,11 +3,11 @@
     <nav class="main-navigation">
         <ul class="main-navigation__list">
             <?php foreach ($projects as $project): ?>
-                <li class="main-navigation__list-item">
-                    <a class="main-navigation__list-item-link" href="#">
+                <li class="main-navigation__list-item <?=($_GET['id'] === $project['id']) ? 'main-navigation__list-item--active' : ''; ?>">
+                    <a class="main-navigation__list-item-link" href="/index.php?id=<?=$project['id']; ?>">
                         <?=htmlspecialchars($project['name']); ?>
                     </a>
-                    <span class="main-navigation__list-item-count"><?=calculateTask($task_list, $project['id']); ?></span>
+                    <span class="main-navigation__list-item-count"><?=$project['tasks_count']; ?></span>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -40,20 +40,6 @@
     </div>
 
     <table class="tasks">
-        <tr class="tasks__item task">
-            <td class="task__select">
-                <label class="checkbox task__checkbox">
-                    <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1">
-                    <span class="checkbox__text">Сделать главную страницу Дела в порядке</span>
-                </label>
-            </td>
-
-            <td class="task__file">
-                <a class="download-link" href="#">Home.psd</a>
-            </td>
-
-            <td class="task__date"></td>
-        </tr>
         <?php foreach ($task_list as $task):?>
             <!--показывать следующий тег <tr/>, если переменная $show_complete_tasks равна единице-->
             <?php if (($show_complete_tasks === 1) or ($show_complete_tasks === 0 && $task['state'] === '0')): ?>
