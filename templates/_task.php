@@ -5,8 +5,6 @@
             <span class="checkbox__text"><?=htmlspecialchars($task['name']); ?></span>
         </label>
     </td>
-    <td class="task__file">
-        <a class="download-link" href="#"></a>
-    </td>
+    <td class="task__file"></td>
     <td class="task__date"><?=htmlspecialchars($task['complete_date']); ?></td>
 </tr>

@@ -16,9 +16,10 @@ INSERT INTO tasks (user_id, project_id, state, name)
 VALUES (1, 4, 0, 'Купить корм для кота'),
        (1, 4, 0, 'Заказать пиццу');
 
-SELECT * FROM projects WHERE user_id = 2;
-
-SELECT * FROM tasks WHERE project_id = 1;
+/*
+ * SELECT * FROM projects WHERE user_id = 2;
+ * SELECT * FROM tasks WHERE project_id = 1;
+*/
 
 UPDATE tasks SET state = 1 WHERE id = 2;
 
