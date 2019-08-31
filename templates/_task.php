@@ -7,7 +7,7 @@
     </td>
     <td class="task__file">
         <?php if ($task['file_url']): ?>
-            <a class="download-link" href="$task['file_url']"><?=$task['file_url']; ?></a>
+            <a class="download-link" href="/uploads/<?=$task['file_url']; ?>"><?=$task['file_url']; ?></a>
         <?php endif; ?>
     </td>
     <td class="task__date"><?=htmlspecialchars($task['complete_date']); ?></td>
