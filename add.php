@@ -14,33 +14,36 @@ $result = mysqli_query($link, $sql);
 
 $project_ids = [];
 
-if ($result) {
-    $projects = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    $project_ids = array_column($projects, 'id');
+if (!$result) {
+    die(mysqli_error($link));
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+$projects = mysqli_fetch_all($result, MYSQLI_ASSOC);
+$project_ids = array_column($projects, 'id');
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $task = $_POST;
 
-	$required = ['name', 'project_id', 'date'];
     $errors = [];
 
     $rules = [
-        'name' => function() {
-            return validateLength('name', MIN_LENGTH);
+        'name' => function() use ($task) {
+            return validateLength($task['name'], MIN_LENGTH);
         },
-        'project_id' => function() use ($project_ids) {
-            return validateProjects('project_id', $project_ids);
+        'project_id' => function() use ($task, $project_ids) {
+            return validateProjects($task['project_id'], $project_ids);
         },
         'date' => function() {
             return is_date_valid('date');
         },
-        'date' => function() {
-            return validateDate('date');
+        'date' => function() use ($task) {
+            if ($task['date'] !== '') {
+                return validateDate($task['date']);
+            }
         }
     ];
 
-    foreach ($_POST as $key => $value) {
+    foreach ($task as $key => $value) {
         if (isset($rules[$key])) {
             $rule = $rules[$key];
             $errors[$key] = $rule();
@@ -48,12 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     $errors = array_filter($errors);
-
-    foreach ($required as $key) {
-		if (empty($_POST[$key])) {
-            $errors[$key] = 'Укажите дату выполнения задачи';
-        }
-    }
 
     if (isset($_FILES['file'])) {
         $file_name = $_FILES['file']['name'];
@@ -71,17 +68,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'errors' => $errors,
             'projects' => $projects]);
 	} else {
-        $sql = 'INSERT INTO tasks (user_id, project_id, name, file_url, complete_date) VALUES (3, ?, ?, ?, ?)';
+        $sql = 'INSERT INTO tasks (user_id, name, project_id, complete_date, file_url) VALUES (3, ?, ?, ?, ?)';
         $stmt = db_get_prepare_stmt($link, $sql, $task);
         $res = mysqli_stmt_execute($stmt);
 
         if ($res) {
-            header("Location: index.php?");
+            header("Location: /index.php");
+        } else {
+            die(mysqli_error($link));
         }
     }
 } else {
     $tasks_content = include_template('add_task.php', [
-        'projects' => $projects]);
+        'projects' => $projects
+        ]);
 }
 
 $page_content = include_template('main.php', [
@@ -91,7 +91,7 @@ $page_content = include_template('main.php', [
 
 $layout_content = include_template('layout.php', [
 	'content' => $page_content,
-	'title' => 'Дела в порядке - Добавление задачи'
-]);
+    'title' => 'Дела в порядке - Добавление задачи'
+    ]);
 
 print($layout_content);

@@ -18,15 +18,15 @@ function getPostVal($name) {
 }
 
 function validateDate($date) {
-    $currentDate = strtotime($_POST[$date]);
+    $currentDate = strtotime($date);
     if ($currentDate <= time()) {
         return "Укажите корректную дату выполнения задачи";
     }
     return null;
 }
 
-function validateLength($name, $MIN_LENGTH) {
-    $str = trim($_POST[$name]);
+function validateLength($text, $MIN_LENGTH) {
+    $str = trim($text);
     $len = strlen($str);
 
     if ($len < $MIN_LENGTH) {
@@ -36,8 +36,8 @@ function validateLength($name, $MIN_LENGTH) {
     return null;
 }
 
-function validateProjects($name, $allowed_list) {
-    $id = $_POST[$name];
+function validateProjects($projectId, $allowed_list) {
+    $id = $projectId;
 
     if (!in_array($id, $allowed_list)) {
         return "Указан несуществующий проект";
