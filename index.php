@@ -9,8 +9,8 @@ if (!$link) {
     die('Ошибка подключения к БД');
 }
 
-$sql = 'SELECT p.id, p.name, p.user_id, COUNT(t.id) AS tasks_count FROM projects p
-LEFT JOIN tasks t ON p.id = t.project_id WHERE t.user_id = 3 GROUP BY t.project_id ';
+$sql = 'SELECT p.id, p.name, COUNT(t.id) AS tasks_count FROM projects p
+LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = 3 GROUP BY p.id ';
 $result = mysqli_query($link, $sql);
 
 if (!$result) {
@@ -40,10 +40,14 @@ if (!isset($_GET['id'])) {
 
 $tasks = mysqli_fetch_all($res, MYSQLI_ASSOC);
 
-$page_content = include_template('main.php', [
-    'projects' => $projects,
+$tasks_content = include_template('list_tasks.php', [
     'task_list' => $tasks,
     'show_complete_tasks' => $show_complete_tasks
+]);
+
+$page_content = include_template('main.php', [
+    'content_tasks' => $tasks_content,
+    'projects' => $projects
 ]);
 
 $layout_content = include_template('layout.php', [
