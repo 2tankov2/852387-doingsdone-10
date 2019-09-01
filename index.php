@@ -51,6 +51,8 @@ $page_content = include_template('main.php', [
 ]);
 
 $layout_content = include_template('layout.php', [
+    'user_menu' => include_template('user_menu.php'),
+    'button_task' => include_template('button_task.php'),
 	'content' => $page_content,
 	'title' => 'Дела в порядке - Главная страница'
 ]);
