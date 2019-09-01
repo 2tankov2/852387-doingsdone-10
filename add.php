@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $errors = array_filter($errors);
 
-    if (isset($_FILES['file'])) {
+    if (empty($errors) && isset($_FILES['file'])) {
         $file_name = $_FILES['file']['name'];
         $tmp_name = $_FILES['file']['tmp_name'];
         $file_path = __DIR__ . '/uploads/';
@@ -72,11 +72,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = db_get_prepare_stmt($link, $sql, $task);
         $res = mysqli_stmt_execute($stmt);
 
-        if ($res) {
-            header("Location: /index.php");
-        } else {
+        if (!$res) {
             die(mysqli_error($link));
         }
+
+        header("Location: /index.php");
     }
 } else {
     $tasks_content = include_template('add_task.php', [
@@ -90,6 +90,8 @@ $page_content = include_template('main.php', [
     ]);
 
 $layout_content = include_template('layout.php', [
+    'user_menu' => include_template('user_menu.php'),
+    'button_task' => include_template('button_task.php'),
 	'content' => $page_content,
     'title' => 'Дела в порядке - Добавление задачи'
     ]);
