@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'errors' => $errors,
             'projects' => $projects]);
 	} else {
-        $sql = 'INSERT INTO tasks (user_id, name, project_id, complete_date, file_url) VALUES (3, ?, ?, ?, ?)';
+        $sql = 'INSERT INTO tasks (user_id, name, project_id, complete_date, file_url) VALUES ("$id", ?, ?, ?, ?)';
         $stmt = db_get_prepare_stmt($link, $sql, $task);
         $res = mysqli_stmt_execute($stmt);
 
