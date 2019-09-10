@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     foreach ($req_fields as $field) {
         if (empty(trim($form[$field]))) {
-            $errors[$field] = "Не заполнено поле " . $field;
+            $errors[$field] = 'Это поле надо заполнить';
         }
     }
 
