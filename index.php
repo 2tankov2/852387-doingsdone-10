@@ -9,8 +9,10 @@ if (!$link) {
     die('Ошибка подключения к БД');
 }
 
+$id = $_SESSION['user']['id'];
+
 $sql = 'SELECT p.id, p.name, COUNT(t.id) AS tasks_count FROM projects p
-LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = 3 GROUP BY p.id ';
+LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = "{$id}" GROUP BY p.id ';
 $result = mysqli_query($link, $sql);
 
 if (!$result) {
@@ -20,11 +22,11 @@ if (!$result) {
 $projects = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
 if (!isset($_GET['id'])) {
-    $sql = 'SELECT * FROM tasks WHERE user_id = 3';
+    $sql = 'SELECT * FROM tasks WHERE user_id = "$id"';
     $res = mysqli_query($link, $sql);
 } else {
     $id = mysqli_real_escape_string($link, $_GET['id']);
-    $sql = "SELECT * FROM tasks WHERE project_id = '%s' AND user_id = 3";
+    $sql = 'SELECT * FROM tasks WHERE project_id = "%s" AND user_id = "{$id}"';
     $sql = sprintf($sql, $id);
     $res = mysqli_query($link, $sql);
 
