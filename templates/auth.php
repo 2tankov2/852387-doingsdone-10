@@ -5,13 +5,14 @@
 </section>
 
 <main class="content__main">
-    <h2 class="content__main-heading">Регистрация аккаунта</h2>
+    <h2 class="content__main-heading">Вход на сайт</h2>
 
-    <form class="form" action="" method="post" autocomplete="off" enctype="multipart/form-data">
+    <form class="form" action="" method="post" autocomplete="off">
         <div class="form__row">
             <label class="form__label" for="email">E-mail <sup>*</sup></label>
 
             <input class="form__input <?=isset($errors['email']) ? "form__input--error" : ""; ?>" type="text" name="email" id="email" value="<?=getPostVal('email'); ?>" placeholder="Введите e-mail">
+
             <?php if (isset($errors['email'])): ?>
                 <p class="form__message"><?=$errors['email']; ?></p>
             <?php endif; ?>
@@ -26,21 +27,12 @@
             <?php endif; ?>
         </div>
 
-        <div class="form__row">
-            <label class="form__label" for="name">Имя <sup>*</sup></label>
-
-            <input class="form__input <?=isset($errors['name']) ? "form__input--error" : ""; ?>" type="text" name="name" id="name" value="<?=getPostVal('name'); ?>" placeholder="Введите Имя">
-            <?php if (isset($errors['name'])): ?>
-                <p class="form__message"><?=$errors['name']; ?></p>
-            <?php endif; ?>
-        </div>
-
         <div class="form__row form__row--controls">
             <?php if (isset($errors)): ?>
                 <p class="error-message">Пожалуйста, исправьте ошибки в форме</p>
             <?php endif; ?>
-
-            <input class="button" type="submit" name="" value="Зарегистрироваться">
+            <input class="button" type="submit" name="" value="Войти">
         </div>
     </form>
+
 </main>

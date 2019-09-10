@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $req_fields = ['email', 'password', 'name'];
 
     foreach ($req_fields as $field) {
-        if (empty($form[$field])) {
+        if (empty(trim($form[$field]))) {
             $errors[$field] = "Не заполнено поле " . $field;
         }
     }
@@ -49,10 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $page_content = include_template('form_register.php', $tpl_data);
 
 $layout_content = include_template('layout.php', [
-    'user_menu' => include_template('login_menu.php'),
-    'button_task' => '',
     'content'    => $page_content,
-    'title'      => 'GifTube | Регистрация'
+    'title'      => 'Дела в порядке | Регистрация'
 ]);
 
 print($layout_content);
