@@ -8,8 +8,10 @@ if (!$link) {
     die('Ошибка подключения к БД');
 }
 
+$id = $_SESSION['user']['id'];
+
 $sql = 'SELECT p.id, p.name, COUNT(t.id) AS tasks_count FROM projects p
-LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = 3 GROUP BY p.id ';
+LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = "$id" GROUP BY p.id ';
 $result = mysqli_query($link, $sql);
 
 $project_ids = [];
@@ -68,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'errors' => $errors,
             'projects' => $projects]);
 	} else {
-        $sql = 'INSERT INTO tasks (user_id, name, project_id, complete_date, file_url) VALUES (3, ?, ?, ?, ?)';
+        $sql = 'INSERT INTO tasks (user_id, name, project_id, complete_date, file_url) VALUES ("$id", ?, ?, ?, ?)';
         $stmt = db_get_prepare_stmt($link, $sql, $task);
         $res = mysqli_stmt_execute($stmt);
 
@@ -90,8 +92,6 @@ $page_content = include_template('main.php', [
     ]);
 
 $layout_content = include_template('layout.php', [
-    'user_menu' => include_template('user_menu.php'),
-    'button_task' => include_template('button_task.php'),
 	'content' => $page_content,
     'title' => 'Дела в порядке - Добавление задачи'
     ]);
