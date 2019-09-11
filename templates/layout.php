@@ -10,18 +10,18 @@
     <link rel="stylesheet" href="../css/flatpickr.min.css">
 </head>
 
-<body class="<?=!isset($_SESSION['user']) ? 'body-background' : ''; ?>">
+<body <?=!isset($user) ? 'class="body-background"' : ''; ?>>
 <h1 class="visually-hidden">Дела в порядке</h1>
 
 <div class="page-wrapper">
-    <div class="container <?=!isset($_SESSION['user']) ? '' : 'container--with-sidebar'; ?>">
+    <div class="container <?=!isset($user) ? '' : 'container--with-sidebar'; ?>">
         <header class="main-header">
             <a href="/">
                 <img src="img/logo.png" width="153" height="42" alt="Логотип Дела в порядке">
             </a>
 
             <div class="main-header__side">
-                <?php if (!isset($_SESSION['user'])): ?>
+                <?php if (!isset($user)): ?>
                     <div class="main-header__side">
                         <a class="main-header__side-item button button--transparent" href="/auth.php">Войти</a>
                     </div>
@@ -30,7 +30,7 @@
 
                     <div class="main-header__side-item user-menu">
                         <div class="user-menu__data">
-                            <p><?=strip_tags($_SESSION['user']['name']); ?></p>
+                            <p><?=strip_tags($user_name); ?></p>
 
                             <a href="logout.php">Выйти</a>
                         </div>
@@ -39,13 +39,7 @@
             </div>
         </header>
 
-        <div class="content">
-            <?php if (!isset($_SESSION['user'])): ?>
-                <?=include_template('guest.php', []);?>
-            <?php else: ?>
-                <?=$content; ?>
-            <?php endif; ?>
-        </div>
+        <div class="content"><?=$content; ?></div>
     </div>
 </div>
 
@@ -56,7 +50,7 @@
 
             <p>Веб-приложение для удобного ведения списка дел.</p>
         </div>
-        <?php if (isset($_SESSION['user'])): ?>
+        <?php if (isset($user)): ?>
             <a class="main-footer__button button button--plus" href="/add.php?">Добавить задачу</a>
         <?php endif; ?>
 
