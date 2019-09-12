@@ -49,22 +49,54 @@ if (isset($_SESSION['user'])) {
         'show_complete_tasks' => $show_complete_tasks
     ]);
 
+    if (isset($_GET['q'])) {
+        $search = trim($_GET['q']) ?? '';
+
+        if (!strlen($search)) {
+            $tasks_content = include_template('list_tasks.php', [
+                'task_list' => [],
+                'show_complete_tasks' => $show_complete_tasks
+                ]);
+        }
+        else {
+
+            $sql = "SELECT * FROM tasks
+                    WHERE user_id = '$id' AND MATCH(name) AGAINST(?)";
+
+            $stmt = db_get_prepare_stmt($link, $sql, [$search]);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+
+            $tasks = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        }
+        $tasks_content = include_template('list_tasks.php', [
+            'task_list' => $tasks,
+            'show_complete_tasks' => $show_complete_tasks
+            ]);
+    }
+
     $user = $_SESSION['user'];
     $user_name = $_SESSION['user']['name'];
 
     $page_content = include_template('main.php', [
-        'user' => $user,
-        'user_name' => $user_name,
         'content_tasks' => $tasks_content,
         'projects' => $projects
     ]);
+
+    $layout_content = include_template('layout.php', [
+        'user' => $user,
+        'user_name' => $user_name,
+        'content' => $page_content,
+        'title' => 'Дела в порядке - Главная страница'
+    ]);
 } else {
     $page_content = include_template('guest.php', []);
+
+    $layout_content = include_template('layout.php', [
+        'user' => [],
+        'user_name' => '',
+        'content' => $page_content,
+        'title' => 'Дела в порядке - Главная страница'
+    ]);
 }
-
-$layout_content = include_template('layout.php', [
-    'content' => $page_content,
-    'title' => 'Дела в порядке - Главная страница'
-]);
-
 print($layout_content);

@@ -1,5 +1,5 @@
 INSERT INTO projects (name, user_id)
-VALUES ('Входящие', '1'), ('Учеба', 2), ('Работа', 2), ('Домашние дела', 1), ('Авто', 2);
+VALUES ('Входящие', 1), ('Учеба', 2), ('Работа', 2), ('Домашние дела', 1), ('Авто', 2);
 
 INSERT INTO users (email, name, password)
 VALUES ('graf45@yandex.ru', 'Гриша', 'tom789'),
@@ -26,7 +26,7 @@ UPDATE tasks SET state = 1 WHERE id = 2;
 UPDATE tasks SET name = 'Купить корм для собаки' WHERE id = 5;
 
 INSERT INTO projects (name, user_id)
-VALUES ('Спорт', '3'), ('Учеба', 3), ('Прочее', 3), ('Домашние дела', 3), ('Авто', 3), ('Мечта', 3);
+VALUES ('Спорт', 3), ('Учеба', 3), ('Прочее', 3), ('Домашние дела', 3), ('Авто', 3), ('Мечта', 3);
 
 INSERT INTO users (email, name, password)
 VALUES ('krot83@mail.ru', 'Лена', 'grot2206');
