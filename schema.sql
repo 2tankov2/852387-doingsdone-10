@@ -32,3 +32,5 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE FULLTEXT INDEX task_ft_search ON tasks(name);
