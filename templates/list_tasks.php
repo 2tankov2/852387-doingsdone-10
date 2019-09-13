@@ -22,7 +22,7 @@
 </div>
 
 <table class="tasks">
-    <?php if (isset($search) && !count($task_list)): ?>
+    <?php if (isset($search) and empty($task_list)): ?>
         <p>По вашему запросу ничего не найдено</p>
     <?php endif; ?>
     <?php foreach ($task_list as $task):?>

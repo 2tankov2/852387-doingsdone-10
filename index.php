@@ -54,6 +54,7 @@ if (isset($_SESSION['user'])) {
 
         if (!strlen($search)) {
             $tasks_content = include_template('list_tasks.php', [
+                'search' => $search,
                 'task_list' => [],
                 'show_complete_tasks' => $show_complete_tasks
                 ]);
@@ -70,6 +71,7 @@ if (isset($_SESSION['user'])) {
             $tasks = mysqli_fetch_all($result, MYSQLI_ASSOC);
         }
         $tasks_content = include_template('list_tasks.php', [
+            'search' => $search,
             'task_list' => $tasks,
             'show_complete_tasks' => $show_complete_tasks
             ]);
@@ -79,7 +81,7 @@ if (isset($_SESSION['user'])) {
     $user_name = $_SESSION['user']['name'];
 
     $page_content = include_template('main.php', [
-        'content_tasks' => $tasks_content,
+        'content_main' => $tasks_content,
         'projects' => $projects
     ]);
 
