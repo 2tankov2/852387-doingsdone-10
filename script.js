@@ -13,6 +13,22 @@ if ($checkbox.length) {
   });
 }
 
+var $taskCheckBoxes = document.getElementsByClassName('task');
+console.log($taskCheckBoxes);
+if ($taskCheckBoxes.length) {
+  $taskCheckBoxes[0].addEventListener('change', function(event) {
+    if (event.target.classList.contains('task__checkbox')) {
+      var el = event.target;
+
+      var is_checked = +el.checked;
+      var task_id = el.getAttribute('value');
+
+      var url = '/index.php?task_id=' + task_id + '&check=' + is_checked;
+      window.location = url;
+    }
+  });
+}
+
 flatpickr('#date', {
   enableTime: false,
   dateFormat: "Y-m-d",

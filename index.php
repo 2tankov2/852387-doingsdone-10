@@ -10,7 +10,6 @@ if (!$link) {
 }
 
 if (isset($_SESSION['user'])) {
-
     $id = $_SESSION['user']['id'];
 
     $sql = "SELECT p.id, p.name, COUNT(t.id) AS tasks_count FROM projects p
@@ -27,9 +26,9 @@ if (isset($_SESSION['user'])) {
         $sql = "SELECT * FROM tasks WHERE user_id = '$id'";
         $res = mysqli_query($link, $sql);
     } else {
-        $id = mysqli_real_escape_string($link, $_GET['id']);
+        $id_project = mysqli_real_escape_string($link, $_GET['id']);
         $sql = "SELECT * FROM tasks WHERE project_id = '%s' AND user_id = '$id'";
-        $sql = sprintf($sql, $id);
+        $sql = sprintf($sql, $id_project);
         $res = mysqli_query($link, $sql);
 
         if (!$res) {
@@ -62,7 +61,7 @@ if (isset($_SESSION['user'])) {
         else {
 
             $sql = "SELECT * FROM tasks
-                    WHERE user_id = '$id' AND MATCH(name) AGAINST(?)";
+                    WHERE user_id = '$id' AND MATCH(name) AGAINST(? IN BOOLEAN MODE)";
 
             $stmt = db_get_prepare_stmt($link, $sql, [$search]);
             mysqli_stmt_execute($stmt);
@@ -76,6 +75,20 @@ if (isset($_SESSION['user'])) {
             'show_complete_tasks' => $show_complete_tasks
             ]);
     }
+
+    // if (isset($_GET['..'])) {
+
+    //     $state = $_GET['show_completed'] === 1 ?? 0;
+    //     $sql = "UPDATE tasks SET state = '$state' WHERE id = '$id_task'";
+    //     $stmt = db_get_prepare_stmt($link, $sql, [$_GET['show_completed']]);
+    //         mysqli_stmt_execute($stmt);
+    //         $result = mysqli_stmt_get_result($stmt);
+
+    //     if ($result) {
+    //         header("Location: /index.php");
+    //         exit();
+    //     }
+    // }
 
     $user = $_SESSION['user'];
     $user_name = $_SESSION['user']['name'];
