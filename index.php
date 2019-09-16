@@ -76,19 +76,22 @@ if (isset($_SESSION['user'])) {
             ]);
     }
 
-    // if (isset($_GET['..'])) {
+    if (isset($_GET['check'])) {
 
-    //     $state = $_GET['show_completed'] === 1 ?? 0;
-    //     $sql = "UPDATE tasks SET state = '$state' WHERE id = '$id_task'";
-    //     $stmt = db_get_prepare_stmt($link, $sql, [$_GET['show_completed']]);
-    //         mysqli_stmt_execute($stmt);
-    //         $result = mysqli_stmt_get_result($stmt);
+        $id_task = $_GET['task_id'];
 
-    //     if ($result) {
-    //         header("Location: /index.php");
-    //         exit();
-    //     }
-    // }
+        $state = $_GET['check'] === 1 ? 0 : 1;
+
+        $sql = "UPDATE tasks SET state = '$state' WHERE id = '$id_task'";
+        $stmt = db_get_prepare_stmt($link, $sql, [$state]);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+
+        if ($result) {
+            header("Location: /index.php");
+            exit();
+        }
+    }
 
     $user = $_SESSION['user'];
     $user_name = $_SESSION['user']['name'];
