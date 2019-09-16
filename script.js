@@ -13,8 +13,8 @@ if ($checkbox.length) {
   });
 }
 
-var $taskCheckBoxes = document.getElementsByClassName('task');
-console.log($taskCheckBoxes);
+var $taskCheckBoxes = document.getElementsByClassName('tasks');
+
 if ($taskCheckBoxes.length) {
   $taskCheckBoxes[0].addEventListener('change', function(event) {
     if (event.target.classList.contains('task__checkbox')) {
