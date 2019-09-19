@@ -16,7 +16,7 @@
 
     <label class="checkbox">
         <!--добавить сюда атрибут "checked", если переменная $show_complete_tasks равна единице-->
-        <input class="checkbox__input visually-hidden show_completed" type="checkbox" <?=$show_complete_tasks ? "checked" : '';?>>
+        <input class="checkbox__input visually-hidden show_completed" type="checkbox" <?=$show_completed === '1' ? "checked" : '';?>>
         <span class="checkbox__text">Показывать выполненные</span>
     </label>
 </div>
@@ -27,8 +27,8 @@
     <?php endif; ?>
     <?php foreach ($task_list as $task):?>
         <!--показывать следующий тег <tr/>, если переменная $show_complete_tasks равна единице-->
-        <?php if (($show_complete_tasks === 1) or ($show_complete_tasks === 0 && $task['state'] === '0')): ?>
+
             <?=include_template('_task.php', ['task' => $task]); ?>
-        <?php endif; ?>
+
     <?php endforeach; ?>
 </table>

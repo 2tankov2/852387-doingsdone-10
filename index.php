@@ -41,10 +41,44 @@ if (isset($_SESSION['user'])) {
         }
     }
 
+    if (!isset($_GET['show_completed']) || $_GET['show_completed'] === '0') {
+        $sql = "SELECT * FROM tasks WHERE user_id = '$id'";
+        $res = mysqli_query($link, $sql);
+        $checked = '0';
+    } else {
+        $checked = $_GET['show_completed'];
+
+        $sql = "SELECT * FROM tasks WHERE state = '1' AND user_id = '$id'";
+
+        $res = mysqli_query($link, $sql);
+
+        if (!$res) {
+            die(mysqli_error($link));
+        }
+    }
+
     $tasks = mysqli_fetch_all($res, MYSQLI_ASSOC);
+
+    if (isset($_GET['check'])) {
+
+        $id_task = $_GET['task_id'];
+
+        $sql = "UPDATE tasks SET state = ?  WHERE id = ?";
+
+        $state = $_GET['check'] === '1' ? '0' : '1';
+
+        $stmt = db_get_prepare_stmt($link, $sql, [$state, $id_task]);
+            mysqli_stmt_execute($stmt);
+            $res = mysqli_stmt_get_result($stmt);
+
+            header("Location: /index.php");
+            exit();
+
+    }
 
     $tasks_content = include_template('list_tasks.php', [
         'task_list' => $tasks,
+        'show_completed' => $checked,
         'show_complete_tasks' => $show_complete_tasks
     ]);
 
@@ -55,6 +89,7 @@ if (isset($_SESSION['user'])) {
             $tasks_content = include_template('list_tasks.php', [
                 'search' => $search,
                 'task_list' => [],
+                'show_completed' => $checked,
                 'show_complete_tasks' => $show_complete_tasks
                 ]);
         }
@@ -72,25 +107,9 @@ if (isset($_SESSION['user'])) {
         $tasks_content = include_template('list_tasks.php', [
             'search' => $search,
             'task_list' => $tasks,
+            'show_completed' => $checked,
             'show_complete_tasks' => $show_complete_tasks
             ]);
-    }
-
-    if (isset($_GET['check'])) {
-
-        $id_task = $_GET['task_id'];
-
-        $state = $_GET['check'] === 1 ? 0 : 1;
-
-        $sql = "UPDATE tasks SET state = '$state' WHERE id = '$id_task'";
-        $stmt = db_get_prepare_stmt($link, $sql, [$state]);
-            mysqli_stmt_execute($stmt);
-            $result = mysqli_stmt_get_result($stmt);
-
-        if ($result) {
-            header("Location: /index.php");
-            exit();
-        }
     }
 
     $user = $_SESSION['user'];
