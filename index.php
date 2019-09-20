@@ -10,10 +10,10 @@ if (!$link) {
 }
 
 if (isset($_SESSION['user'])) {
-    $id = $_SESSION['user']['id'];
+    $user_id = $_SESSION['user']['id'];
 
     $sql = "SELECT p.id, p.name, COUNT(t.id) AS tasks_count FROM projects p
-    LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = '$id' GROUP BY p.id";
+    LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = '$user_id' GROUP BY p.id";
     $result = mysqli_query($link, $sql);
 
     if (!$result) {
@@ -22,54 +22,57 @@ if (isset($_SESSION['user'])) {
 
     $projects = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-    if (!isset($_GET['id'])) {
-        $sql = "SELECT * FROM tasks WHERE user_id = '$id'";
-        $res = mysqli_query($link, $sql);
-    } else {
-        $id_project = mysqli_real_escape_string($link, $_GET['id']);
-        $sql = "SELECT * FROM tasks WHERE project_id = '%s' AND user_id = '$id'";
-        $sql = sprintf($sql, $id_project);
-        $res = mysqli_query($link, $sql);
+    if (!isset($_GET['project_id']) && !isset($_GET['show_completed']) || !isset($_GET['project_id']) && $_GET['show_completed'] === '0') {
 
-        if (!$res) {
-            die(mysqli_error($link));
-        }
+        $sql = "SELECT * FROM tasks WHERE user_id = '$user_id' AND state = 0";
+        $result = mysqli_query($link, $sql);
+        $checked = isset($_GET['show_completed']) ? $_GET['show_completed'] : '';
 
-        if (!mysqli_num_rows($res)) {
-            http_response_code(404);
-            die();
-        }
-    }
+    } elseif (!isset($_GET['project_id']) && $_GET['show_completed'] === '1') {
 
-    if (!isset($_GET['show_completed']) || $_GET['show_completed'] === '0') {
-        $sql = "SELECT * FROM tasks WHERE user_id = '$id'";
-        $res = mysqli_query($link, $sql);
-        $checked = '0';
-    } else {
         $checked = $_GET['show_completed'];
+        $sql = "SELECT * FROM tasks WHERE user_id = '$user_id'";
+        $result = mysqli_query($link, $sql);
 
-        $sql = "SELECT * FROM tasks WHERE state = '1' AND user_id = '$id'";
+    } elseif (isset($_GET['project_id'])) {
 
-        $res = mysqli_query($link, $sql);
+        $project_id = mysqli_real_escape_string($link, $_GET['project_id']);
 
-        if (!$res) {
+        if (isset($_GET['show_completed']) && $_GET['show_completed'] === '1') {
+
+            $checked = $_GET['show_completed'];
+            $sql = "SELECT * FROM tasks WHERE project_id = '%s' AND user_id = '$user_id'";
+            $sql = sprintf($sql, $project_id);
+
+        } else {
+
+            $checked = isset($_GET['show_completed']) ? $_GET['show_completed'] : '';
+            $sql = "SELECT * FROM tasks WHERE project_id = '%s' AND user_id = '$user_id' AND state = 0";
+            $sql = sprintf($sql, $project_id);
+
+        }
+
+        $result = mysqli_query($link, $sql);
+
+        if (!$result) {
             die(mysqli_error($link));
         }
     }
 
-    $tasks = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    $tasks = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
     if (isset($_GET['check'])) {
 
-        $id_task = $_GET['task_id'];
+        $task_id = $_GET['task_id'];
 
         $sql = "UPDATE tasks SET state = ?  WHERE id = ?";
 
-        $state = $_GET['check'] === '1' ? '0' : '1';
+        $state = $_GET['check'];
+        $state === '0' ? '1' : '0';
 
-        $stmt = db_get_prepare_stmt($link, $sql, [$state, $id_task]);
+        $stmt = db_get_prepare_stmt($link, $sql, [$state, $task_id]);
             mysqli_stmt_execute($stmt);
-            $res = mysqli_stmt_get_result($stmt);
+            $result = mysqli_stmt_get_result($stmt);
 
             header("Location: /index.php");
             exit();
