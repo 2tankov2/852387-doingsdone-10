@@ -2,7 +2,6 @@
 
 require_once('helpers.php');
 require_once('funcs.php');
-require_once('data.php');
 require_once('init.php');
 
 if (!$link) {
@@ -14,75 +13,75 @@ if (isset($_SESSION['user'])) {
 
     $sql = "SELECT p.id, p.name, COUNT(t.id) AS tasks_count FROM projects p
     LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = '$user_id' GROUP BY p.id";
-    $result = mysqli_query($link, $sql);
+    $result_projects = mysqli_query($link, $sql);
 
-    if (!$result) {
+    if (!$result_projects) {
         die(mysqli_error($link));
     }
 
-    $projects = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $projects = mysqli_fetch_all($result_projects, MYSQLI_ASSOC);
 
-    if (!isset($_GET['project_id']) && !isset($_GET['show_completed']) || !isset($_GET['project_id']) && $_GET['show_completed'] === '0') {
-
-        $sql = "SELECT * FROM tasks WHERE user_id = '$user_id' AND state = 0";
-        $result = mysqli_query($link, $sql);
-        $checked = isset($_GET['show_completed']) ? $_GET['show_completed'] : '';
-
-    } elseif (!isset($_GET['project_id']) && $_GET['show_completed'] === '1') {
-
-        $checked = $_GET['show_completed'];
+    if (!isset($_GET['project_id'])) {
         $sql = "SELECT * FROM tasks WHERE user_id = '$user_id'";
-        $result = mysqli_query($link, $sql);
-
-    } elseif (isset($_GET['project_id'])) {
-
+        $result_tasks = mysqli_query($link, $sql);
+    } else {
         $project_id = mysqli_real_escape_string($link, $_GET['project_id']);
-
-        if (isset($_GET['show_completed']) && $_GET['show_completed'] === '1') {
-
-            $checked = $_GET['show_completed'];
-            $sql = "SELECT * FROM tasks WHERE project_id = '%s' AND user_id = '$user_id'";
-            $sql = sprintf($sql, $project_id);
-
-        } else {
-
-            $checked = isset($_GET['show_completed']) ? $_GET['show_completed'] : '';
-            $sql = "SELECT * FROM tasks WHERE project_id = '%s' AND user_id = '$user_id' AND state = 0";
-            $sql = sprintf($sql, $project_id);
-
-        }
-
-        $result = mysqli_query($link, $sql);
-
-        if (!$result) {
+        $sql = "SELECT * FROM tasks WHERE project_id = '%s' AND user_id = '$user_id'";
+        $sql = sprintf($sql, $project_id);
+        $result_tasks = mysqli_query($link, $sql);
+        if (!$result_tasks) {
             die(mysqli_error($link));
         }
     }
 
-    $tasks = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
-    if (isset($_GET['check'])) {
-
-        $task_id = $_GET['task_id'];
-
-        $sql = "UPDATE tasks SET state = ?  WHERE id = ?";
-
-        $state = $_GET['check'];
-        $state === '0' ? '1' : '0';
-
-        $stmt = db_get_prepare_stmt($link, $sql, [$state, $task_id]);
-            mysqli_stmt_execute($stmt);
-            $result = mysqli_stmt_get_result($stmt);
-
-            header("Location: /index.php");
-            exit();
-
+    if (isset($_GET['task_filter'])) {
+        $filter = $_GET['task_filter'];
+        if($filter) {
+            switch ($filter) {
+                case "day":
+                    $date = change_date_format("now", 'Y-m-d');
+                    $sql = "SELECT * FROM tasks WHERE user_id='$user_id' AND date(complete_date) = '$date'";
+                    $result_tasks = mysqli_query($link, $sql);
+                    break;
+                case "tomorrow":
+                    $date = change_date_format("tomorrow", 'Y-m-d');
+                    $sql = "SELECT * FROM tasks WHERE user_id='$user_id' AND date(complete_date) = '$date'";
+                    $result_tasks = mysqli_query($link, $sql);
+                    break;
+                case "late":
+                    $date = change_date_format("now", 'Y-m-d');
+                    $sql = "SELECT * FROM tasks WHERE user_id='$user_id' AND complete_date < '$date' AND state = 0";
+                    $result_tasks = mysqli_query($link, $sql);
+                    break;
+            }
+        }
     }
 
+    if (isset($_GET['show_completed'])) {
+        $show_completed = intval($_GET['show_completed']) ?? null;
+        if ($show_completed !== null) {
+            $_COOKIE['show_complete_tasks'] = $show_completed;
+        }
+    }
+
+    if (isset($_GET['check']) && isset($_GET['task_id'])) {
+
+        $task_id = $_GET['task_id'];
+        $state = $_GET['check'] === '1' ? '0' : '1';
+
+        $sql = "UPDATE tasks SET state = ?  WHERE id = ?";
+        $stmt = db_get_prepare_stmt($link, $sql, [$state, $task_id]);
+        mysqli_stmt_execute($stmt);
+        $result_tasks = mysqli_stmt_get_result($stmt);
+
+        header("Location: /index.php");
+        exit();
+    }
+
+    $tasks = mysqli_fetch_all($result_tasks, MYSQLI_ASSOC);
+
     $tasks_content = include_template('list_tasks.php', [
-        'task_list' => $tasks,
-        'show_completed' => $checked,
-        'show_complete_tasks' => $show_complete_tasks
+        'task_list' => $tasks
     ]);
 
     if (isset($_GET['q'])) {
@@ -91,9 +90,7 @@ if (isset($_SESSION['user'])) {
         if (!strlen($search)) {
             $tasks_content = include_template('list_tasks.php', [
                 'search' => $search,
-                'task_list' => [],
-                'show_completed' => $checked,
-                'show_complete_tasks' => $show_complete_tasks
+                'task_list' => []
                 ]);
         }
         else {
@@ -109,9 +106,7 @@ if (isset($_SESSION['user'])) {
         }
         $tasks_content = include_template('list_tasks.php', [
             'search' => $search,
-            'task_list' => $tasks,
-            'show_completed' => $checked,
-            'show_complete_tasks' => $show_complete_tasks
+            'task_list' => $tasks
             ]);
     }
 

@@ -45,3 +45,12 @@ function validateProjects($projectId, $allowed_list) {
 
     return null;
 }
+
+function isShowCompletedTask() {
+    return $_COOKIE['show_complete_tasks'] === 1;
+}
+
+function change_date_format ($date, $format) {
+    $new_date = date_create($date);
+    return date_format($new_date, $format);
+}

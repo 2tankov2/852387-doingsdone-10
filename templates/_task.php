@@ -1,8 +1,8 @@
 
-<tr class="tasks__item task <?=$task['state'] === '1' ? "task--completed" : '';?> <?=isExpiringTask($task['complete_date']) ? "task--important" : ''; ?>">
+<tr class="tasks__item task <?=$task['state'] ? "task--completed" : '';?> <?=isExpiringTask($task['complete_date']) ? "task--important" : ''; ?>">
     <td class="task__select">
         <label class="checkbox task__checkbox">
-            <input class="checkbox__input visually-hidden" type="checkbox" <?=isset($task_id) && isset($state) && $task_id === $task['id'] && $state === '1' ? "checked" : '';?> value="<?=$task['id']; ?>">
+            <input class="checkbox__input visually-hidden" type="checkbox" <?=isset($state) ? "checked" : '';?> value="<?=$task['id']; ?>">
             <span class="checkbox__text"><?=htmlspecialchars($task['name']); ?></span>
         </label>
     </td>
