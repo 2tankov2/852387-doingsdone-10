@@ -48,6 +48,8 @@ if (isset($_SESSION['user'])) {
         }
     }
 
+    $tasks = mysqli_fetch_all($result_tasks, MYSQLI_ASSOC);
+
     if (isset($_GET['check']) && isset($_GET['task_id'])) {
 
         $task_id = $_GET['task_id'];
@@ -61,8 +63,6 @@ if (isset($_SESSION['user'])) {
         header("Location: /index.php");
         exit();
     }
-
-    $tasks = mysqli_fetch_all($result_tasks, MYSQLI_ASSOC);
 
     $tasks_content = include_template('list_tasks.php', [
         'task_list' => $tasks
