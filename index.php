@@ -35,25 +35,9 @@ if (isset($_SESSION['user'])) {
     }
 
     if (isset($_GET['task_filter'])) {
-        $filter = $_GET['task_filter'];
-        if($filter) {
-            switch ($filter) {
-                case "day":
-                    $date = change_date_format("now", 'Y-m-d');
-                    $sql = "SELECT * FROM tasks WHERE user_id='$user_id' AND date(complete_date) = '$date'";
-                    $result_tasks = mysqli_query($link, $sql);
-                    break;
-                case "tomorrow":
-                    $date = change_date_format("tomorrow", 'Y-m-d');
-                    $sql = "SELECT * FROM tasks WHERE user_id='$user_id' AND date(complete_date) = '$date'";
-                    $result_tasks = mysqli_query($link, $sql);
-                    break;
-                case "late":
-                    $date = change_date_format("now", 'Y-m-d');
-                    $sql = "SELECT * FROM tasks WHERE user_id='$user_id' AND complete_date < '$date' AND state = 0";
-                    $result_tasks = mysqli_query($link, $sql);
-                    break;
-            }
+        $task_filter = trim($_GET['task_filter']) ?? '';
+        if ($task_filter !== '') {
+            $_COOKIE['task_filter'] = $task_filter;
         }
     }
 
@@ -67,10 +51,10 @@ if (isset($_SESSION['user'])) {
     if (isset($_GET['check']) && isset($_GET['task_id'])) {
 
         $task_id = $_GET['task_id'];
-        $state = $_GET['check'] === '1' ? '0' : '1';
+        $is_checked = $_GET['check'] ?? 0;
 
         $sql = "UPDATE tasks SET state = ?  WHERE id = ?";
-        $stmt = db_get_prepare_stmt($link, $sql, [$state, $task_id]);
+        $stmt = db_get_prepare_stmt($link, $sql, [$is_checked, $task_id]);
         mysqli_stmt_execute($stmt);
         $result_tasks = mysqli_stmt_get_result($stmt);
 
