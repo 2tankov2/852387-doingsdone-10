@@ -48,8 +48,6 @@ if (isset($_SESSION['user'])) {
         }
     }
 
-    $tasks = mysqli_fetch_all($result_tasks, MYSQLI_ASSOC);
-
     if (isset($_GET['check']) && isset($_GET['task_id'])) {
 
         $task_id = $_GET['task_id'];
@@ -64,38 +62,25 @@ if (isset($_SESSION['user'])) {
         exit();
     }
 
-    $tasks_content = include_template('list_tasks.php', [
-        'task_list' => $tasks
-    ]);
-
     if (isset($_GET['q'])) {
         $search = trim($_GET['q']) ?? '';
 
-        if (!strlen($search)) {
-            $tasks_content = include_template('list_tasks.php', [
-                'search' => $search,
-                'task_list' => []
-                ]);
-        }
-        else {
+        $sql = "SELECT * FROM tasks
+                WHERE user_id = '$user_id' AND MATCH(name) AGAINST(? IN BOOLEAN MODE)";
 
-            $sql = "SELECT * FROM tasks
-                    WHERE user_id = '$id' AND MATCH(name) AGAINST(? IN BOOLEAN MODE)";
-
-            $stmt = db_get_prepare_stmt($link, $sql, [$search]);
-            mysqli_stmt_execute($stmt);
-            $result = mysqli_stmt_get_result($stmt);
-
-            $tasks = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        }
-        $tasks_content = include_template('list_tasks.php', [
-            'search' => $search,
-            'task_list' => $tasks
-            ]);
+        $stmt = db_get_prepare_stmt($link, $sql, [$search]);
+        mysqli_stmt_execute($stmt);
+        $result_tasks = mysqli_stmt_get_result($stmt);
     }
+
+    $tasks = mysqli_fetch_all($result_tasks, MYSQLI_ASSOC);
 
     $user = $_SESSION['user'];
     $user_name = $_SESSION['user']['name'];
+
+    $tasks_content = include_template('list_tasks.php', [
+        'task_list' => $tasks
+    ]);
 
     $page_content = include_template('main.php', [
         'content_main' => $tasks_content,

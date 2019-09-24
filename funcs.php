@@ -77,3 +77,7 @@ function isFilterTask($data) {
 function isFilter() {
     return empty($_GET['task_filter']);
 }
+
+function isSearch() {
+    return isset($_GET['q']);
+}

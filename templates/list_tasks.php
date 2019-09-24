@@ -20,15 +20,17 @@
     </label>
 </div>
 
+<?php if (isSearch() && empty($task_list)): ?>
+    <p>По вашему запросу ничего не найдено</p>
+<?php else: ?>
 <table class="tasks">
-    <?php if (isset($search) and empty($task_list)): ?>
-        <p>По вашему запросу ничего не найдено</p>
-    <?php endif; ?>
     <?php foreach ($task_list as $task):?>
-        <?php if (isShowCompletedTask() or (!isShowCompletedTask() && $task['state'] === '0')): ?>
+        <?php if (isSearch() or isShowCompletedTask() or (!isShowCompletedTask() && $task['state'] === '0')): ?>
             <?php if (isFilter() or (endDate($task['complete_date']))):?>
                 <?=include_template('_task.php', ['task' => $task]); ?>
             <?php endif; ?>
         <?php endif; ?>
+
     <?php endforeach; ?>
 </table>
+<?php endif; ?>
