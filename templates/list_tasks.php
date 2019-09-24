@@ -8,27 +8,29 @@
 
 <div class="tasks-controls">
     <nav class="tasks-switch">
-        <a href="/" class="tasks-switch__item tasks-switch__item--active">Все задачи</a>
-        <a href="/" class="tasks-switch__item">Повестка дня</a>
-        <a href="/" class="tasks-switch__item">Завтра</a>
-        <a href="/" class="tasks-switch__item">Просроченные</a>
+        <a href="/" class="tasks-switch__item <?=isFilter() ? "tasks-switch__item--active" : ""; ?>">Все задачи</a>
+        <a href="/index.php?task_filter=day" class="tasks-switch__item <?=isFilterTask('day') ? "tasks-switch__item--active" : ""; ?>">Повестка дня</a>
+        <a href="/index.php?task_filter=tomorrow" class="tasks-switch__item <?=isFilterTask('tomorrow') ? "tasks-switch__item--active" : ""; ?>">Завтра</a>
+        <a href="/index.php?task_filter=late" class="tasks-switch__item <?=isFilterTask('late') ? "tasks-switch__item--active" : ""; ?>">Просроченные</a>
     </nav>
 
     <label class="checkbox">
-        <!--добавить сюда атрибут "checked", если переменная $show_complete_tasks равна единице-->
-        <input class="checkbox__input visually-hidden show_completed" type="checkbox" <?=$show_complete_tasks ? "checked" : '';?>>
+        <input class="checkbox__input visually-hidden show_completed" type="checkbox" <?=isShowCompletedTask() ? "checked" : ""; ?>>
         <span class="checkbox__text">Показывать выполненные</span>
     </label>
 </div>
 
+<?php if (isSearch() && empty($task_list)): ?>
+    <p>По вашему запросу ничего не найдено</p>
+<?php else: ?>
 <table class="tasks">
-    <?php if (isset($search) && !count($task_list)): ?>
-        <p>По вашему запросу ничего не найдено</p>
-    <?php endif; ?>
     <?php foreach ($task_list as $task):?>
-        <!--показывать следующий тег <tr/>, если переменная $show_complete_tasks равна единице-->
-        <?php if (($show_complete_tasks === 1) or ($show_complete_tasks === 0 && $task['state'] === '0')): ?>
-            <?=include_template('_task.php', ['task' => $task]); ?>
+        <?php if (isSearch() or isShowCompletedTask() or (!isShowCompletedTask() && $task['state'] === '0')): ?>
+            <?php if (isFilter() or (endDate($task['complete_date']))):?>
+                <?=include_template('_task.php', ['task' => $task]); ?>
+            <?php endif; ?>
         <?php endif; ?>
+
     <?php endforeach; ?>
 </table>
+<?php endif; ?>

@@ -2,7 +2,6 @@
 
 require_once('helpers.php');
 require_once('funcs.php');
-require_once('data.php');
 require_once('init.php');
 
 if (!$link) {
@@ -10,76 +9,81 @@ if (!$link) {
 }
 
 if (isset($_SESSION['user'])) {
-
-    $id = $_SESSION['user']['id'];
+    $user_id = $_SESSION['user']['id'];
 
     $sql = "SELECT p.id, p.name, COUNT(t.id) AS tasks_count FROM projects p
-    LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = '$id' GROUP BY p.id";
-    $result = mysqli_query($link, $sql);
+    LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = '$user_id' GROUP BY p.id";
+    $result_projects = mysqli_query($link, $sql);
 
-    if (!$result) {
+    if (!$result_projects) {
         die(mysqli_error($link));
     }
 
-    $projects = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $projects = mysqli_fetch_all($result_projects, MYSQLI_ASSOC);
 
-    if (!isset($_GET['id'])) {
-        $sql = "SELECT * FROM tasks WHERE user_id = '$id'";
-        $res = mysqli_query($link, $sql);
+    if (!isset($_GET['project_id'])) {
+        $sql = "SELECT * FROM tasks WHERE user_id = '$user_id'";
+        $result_tasks = mysqli_query($link, $sql);
     } else {
-        $id = mysqli_real_escape_string($link, $_GET['id']);
-        $sql = "SELECT * FROM tasks WHERE project_id = '%s' AND user_id = '$id'";
-        $sql = sprintf($sql, $id);
-        $res = mysqli_query($link, $sql);
-
-        if (!$res) {
+        $project_id = mysqli_real_escape_string($link, $_GET['project_id']);
+        $sql = "SELECT * FROM tasks WHERE project_id = '%s' AND user_id = '$user_id'";
+        $sql = sprintf($sql, $project_id);
+        $result_tasks = mysqli_query($link, $sql);
+        if (!$result_tasks) {
             die(mysqli_error($link));
-        }
-
-        if (!mysqli_num_rows($res)) {
-            http_response_code(404);
-            die();
         }
     }
 
-    $tasks = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    if (isset($_GET['task_filter'])) {
+        $task_filter = trim($_GET['task_filter']) ?? '';
+        if ($task_filter !== '') {
+            $_COOKIE['task_filter'] = $task_filter;
+        }
+    }
 
-    $tasks_content = include_template('list_tasks.php', [
-        'task_list' => $tasks,
-        'show_complete_tasks' => $show_complete_tasks
-    ]);
+    if (isset($_GET['show_completed'])) {
+        $show_completed = intval($_GET['show_completed']) ?? null;
+        if ($show_completed !== null) {
+            $_COOKIE['show_complete_tasks'] = $show_completed;
+        }
+    }
+
+    if (isset($_GET['check']) && isset($_GET['task_id'])) {
+
+        $task_id = $_GET['task_id'];
+        $is_checked = $_GET['check'] ?? 0;
+
+        $sql = "UPDATE tasks SET state = ?  WHERE id = ?";
+        $stmt = db_get_prepare_stmt($link, $sql, [$is_checked, $task_id]);
+        mysqli_stmt_execute($stmt);
+        $result_tasks = mysqli_stmt_get_result($stmt);
+
+        header("Location: /index.php");
+        exit();
+    }
 
     if (isset($_GET['q'])) {
         $search = trim($_GET['q']) ?? '';
 
-        if (!strlen($search)) {
-            $tasks_content = include_template('list_tasks.php', [
-                'task_list' => [],
-                'show_complete_tasks' => $show_complete_tasks
-                ]);
-        }
-        else {
+        $sql = "SELECT * FROM tasks
+                WHERE user_id = '$user_id' AND MATCH(name) AGAINST(? IN BOOLEAN MODE)";
 
-            $sql = "SELECT * FROM tasks
-                    WHERE user_id = '$id' AND MATCH(name) AGAINST(?)";
-
-            $stmt = db_get_prepare_stmt($link, $sql, [$search]);
-            mysqli_stmt_execute($stmt);
-            $result = mysqli_stmt_get_result($stmt);
-
-            $tasks = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        }
-        $tasks_content = include_template('list_tasks.php', [
-            'task_list' => $tasks,
-            'show_complete_tasks' => $show_complete_tasks
-            ]);
+        $stmt = db_get_prepare_stmt($link, $sql, [$search]);
+        mysqli_stmt_execute($stmt);
+        $result_tasks = mysqli_stmt_get_result($stmt);
     }
+
+    $tasks = mysqli_fetch_all($result_tasks, MYSQLI_ASSOC);
 
     $user = $_SESSION['user'];
     $user_name = $_SESSION['user']['name'];
 
+    $tasks_content = include_template('list_tasks.php', [
+        'task_list' => $tasks
+    ]);
+
     $page_content = include_template('main.php', [
-        'content_tasks' => $tasks_content,
+        'content_main' => $tasks_content,
         'projects' => $projects
     ]);
 

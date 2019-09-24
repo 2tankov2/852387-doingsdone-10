@@ -91,7 +91,7 @@ $user_name = $_SESSION['user']['name'];
 
 $page_content = include_template('main.php', [
     'projects' => $projects,
-    'content_tasks' => $tasks_content
+    'content_main' => $tasks_content
     ]);
 
 $layout_content = include_template('layout.php', [

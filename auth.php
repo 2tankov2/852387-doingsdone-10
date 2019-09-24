@@ -26,9 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 	$user = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
 
+
 	if (!count($errors) && $user) {
 		if (password_verify($form['password'], $user['password'])) {
-			$_SESSION['user'] = $user;
+            $_SESSION['user'] = $user;
 		}
 		else {
 			$errors['password'] = 'Неверный пароль';
