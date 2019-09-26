@@ -1,8 +1,9 @@
 <?php
 
-require_once('helpers.php');
-require_once('funcs.php');
-require_once('init.php');
+require_once 'vendor/autoload.php';
+require_once 'helpers.php';
+require_once 'funcs.php';
+require_once 'init.php';
 
 
 if (!$link) {
@@ -60,16 +61,22 @@ $user_name = $_SESSION['user']['name'];
 
 $project_content = include_template('add_project.php', $tpl_data);
 
-$page_content = include_template('main.php', [
+$page_content = include_template(
+    'main.php',
+    [
     'projects' => $projects,
     'content_main' => $project_content
-    ]);
+    ]
+);
 
-$layout_content = include_template('layout.php', [
+$layout_content = include_template(
+    'layout.php',
+    [
     'user' => $user,
     'user_name' => $user_name,
-	'content' => $page_content,
+    'content' => $page_content,
     'title' => 'Дела в порядке - Добавление проекта'
-    ]);
+    ]
+);
 
 print($layout_content);

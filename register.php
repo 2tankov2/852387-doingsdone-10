@@ -1,7 +1,9 @@
 <?php
-require_once('init.php');
-require_once('funcs.php');
-require_once('helpers.php');
+
+require_once 'vendor/autoload.php';
+require_once 'init.php';
+require_once 'funcs.php';
+require_once 'helpers.php';
 
 $tpl_data = [];
 
@@ -39,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: /index.php");
             exit();
         }
-
     }
 
     $tpl_data['errors'] = $errors;
@@ -48,9 +49,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $page_content = include_template('form_register.php', $tpl_data);
 
-$layout_content = include_template('layout.php', [
+$layout_content = include_template(
+    'layout.php',
+    [
     'content'    => $page_content,
     'title'      => 'Дела в порядке | Регистрация'
-]);
+    ]
+);
 
 print($layout_content);

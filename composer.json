@@ -1,0 +1,22 @@
+{
+    "name": "tankov/doingsdone",
+    "description": "Website for easy to-do list management",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "tankov",
+            "email": "tan.kov@hotmail.com"
+        }
+    ],
+    "scripts": {
+      "phpcs": "phpcs",
+      "phpcbf": "phpcbf"
+    },
+    "require": {
+        "swiftmailer/swiftmailer": "^6.2"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.4"
+    }
+}

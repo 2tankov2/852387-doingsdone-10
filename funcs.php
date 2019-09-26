@@ -2,22 +2,26 @@
 
 const MIN_LENGTH = 1;
 
-function hoursDiff($completeDate) {
+function hoursDiff($completeDate)
+{
     $endTs = strtotime($completeDate);
     $secsToEndTask = $endTs - time();
     $hours = floor($secsToEndTask / 3600);
     return $hours;
 }
 
-function isExpiringTask($date) {
+function isExpiringTask($date)
+{
     return hoursDiff($date) <= 24;
 }
 
-function getPostVal($name) {
+function getPostVal($name)
+{
     return $_POST[$name] ?? "";
 }
 
-function validateDate($date) {
+function validateDate($date)
+{
     $currentDate = strtotime($date);
     if ($currentDate <= time()) {
         return "Укажите корректную дату выполнения задачи";
@@ -25,7 +29,8 @@ function validateDate($date) {
     return null;
 }
 
-function validateLength($text, $MIN_LENGTH) {
+function validateLength($text, $MIN_LENGTH)
+{
     $str = trim($text);
     $len = strlen($str);
 
@@ -36,7 +41,8 @@ function validateLength($text, $MIN_LENGTH) {
     return null;
 }
 
-function validateProjects($projectId, $allowed_list) {
+function validateProjects($projectId, $allowed_list)
+{
     $id = $projectId;
 
     if (!in_array($id, $allowed_list)) {
@@ -46,16 +52,19 @@ function validateProjects($projectId, $allowed_list) {
     return null;
 }
 
-function isShowCompletedTask() {
+function isShowCompletedTask()
+{
     return $_COOKIE['show_complete_tasks'] === 1;
 }
 
-function change_date_format ($date, $format) {
+function change_date_format($date, $format)
+{
     $new_date = date_create($date);
     return date_format($new_date, $format);
 }
 
-function endDate ($taskCompleteDate) {
+function endDate($taskCompleteDate)
+{
     $day = $_COOKIE['task_filter'];
     switch ($day) {
         case "day":
@@ -70,14 +79,17 @@ function endDate ($taskCompleteDate) {
     }
 }
 
-function isFilterTask($data) {
+function isFilterTask($data)
+{
     return $_COOKIE['task_filter'] === $data;
 }
 
-function isFilter() {
+function isFilter()
+{
     return empty($_GET['task_filter']);
 }
 
-function isSearch() {
+function isSearch()
+{
     return isset($_GET['q']);
 }
