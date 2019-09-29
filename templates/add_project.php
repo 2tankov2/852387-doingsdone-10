@@ -5,12 +5,12 @@
         <label class="form__label" for="project_name">Название <sup>*</sup></label>
 
         <input class="form__input <?=isset($errors['name']) ? "form__input--error" : ""; ?>" type="text" name="name" id="project_name" value="<?=getPostVal('name'); ?>" placeholder="Введите название проекта">
-        <?php if (isset($errors['name'])): ?>
+        <?php if (isset($errors['name'])) : ?>
             <p class="form__message"><?=$errors['name']; ?></p>
         <?php endif; ?>
     </div>
 
-    <?php if (isset($errors)): ?>
+    <?php if (isset($errors)) : ?>
         <p class="form__message">«Пожалуйста, исправьте ошибку в форме»</p>
     <?php endif; ?>
 

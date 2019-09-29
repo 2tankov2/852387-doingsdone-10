@@ -1,8 +1,9 @@
 <?php
 
-require_once('helpers.php');
-require_once('funcs.php');
-require_once('init.php');
+require_once 'vendor/autoload.php';
+require_once 'helpers.php';
+require_once 'funcs.php';
+require_once 'init.php';
 
 if (!$link) {
     die('Ошибка подключения к БД');
@@ -49,7 +50,6 @@ if (isset($_SESSION['user'])) {
     }
 
     if (isset($_GET['check']) && isset($_GET['task_id'])) {
-
         $task_id = $_GET['task_id'];
         $is_checked = $_GET['check'] ?? 0;
 
@@ -78,29 +78,41 @@ if (isset($_SESSION['user'])) {
     $user = $_SESSION['user'];
     $user_name = $_SESSION['user']['name'];
 
-    $tasks_content = include_template('list_tasks.php', [
+    $tasks_content = include_template(
+        'list_tasks.php',
+        [
         'task_list' => $tasks
-    ]);
+        ]
+    );
 
-    $page_content = include_template('main.php', [
+    $page_content = include_template(
+        'main.php',
+        [
         'content_main' => $tasks_content,
         'projects' => $projects
-    ]);
+        ]
+    );
 
-    $layout_content = include_template('layout.php', [
+    $layout_content = include_template(
+        'layout.php',
+        [
         'user' => $user,
         'user_name' => $user_name,
         'content' => $page_content,
         'title' => 'Дела в порядке - Главная страница'
-    ]);
+        ]
+    );
 } else {
     $page_content = include_template('guest.php', []);
 
-    $layout_content = include_template('layout.php', [
+    $layout_content = include_template(
+        'layout.php',
+        [
         'user' => [],
         'user_name' => '',
         'content' => $page_content,
         'title' => 'Дела в порядке - Главная страница'
-    ]);
+        ]
+    );
 }
 print($layout_content);
