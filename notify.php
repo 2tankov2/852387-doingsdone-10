@@ -27,16 +27,23 @@ if ($res_users && mysqli_num_rows($res_users)) {
         if ($res && mysqli_num_rows($res)) {
             $tasks = mysqli_fetch_all($res, MYSQLI_ASSOC);
             $recipients[$user['email']] = $user['name'];
-
+            print_r($tasks);
             $message = new Swift_Message();
             $message->setSubject("Уведомление от сервиса «Дела в порядке»");
             $message->setFrom(['keks@phpdemo.ru']);
             $message->setBcc($recipients);
             $msg_content = "";
+            $tasks_list = "";
 
             foreach ($tasks as $task) {
-                $msg_content .= "Уважаемый, " . $user['name'] . ". У вас запланирована задача " . $task['name'] . " на " . $task['complete_date'] . "  ";
+                $tasks_list .= $task['name'] . " на " . $task['complete_date'] . "  ";
             }
+
+            $count_tasks = count($tasks);
+
+            $msg_content .= "Уважаемый, " . $user['name'] . ". У вас "
+                         . get_noun_plural_form($count_tasks, 'запланирована', 'запланированы', 'запланированы')
+                         . " " . get_noun_plural_form($count_tasks, 'задачи', 'задачи', 'задачи') . ": " . $tasks_list;
 
             $message->setBody($msg_content, 'text/plain');
 
