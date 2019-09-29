@@ -1,5 +1,6 @@
 <?php
 
+date_default_timezone_set('Europe/Moscow');
 const MIN_LENGTH = 1;
 
 /**
@@ -40,10 +41,9 @@ function getPostVal($name)
  * @return в случае, если дата меньше текущей возвращается текст ошибки "Укажите корректную дату выполнения задачи",
  * иначе null
  */
-function validateDate($date)
+function validateDate($currentDate)
 {
-    $currentDate = strtotime($date);
-    if ($currentDate <= time()) {
+    if ($currentDate < date('Y-m-d')) {
         return "Укажите корректную дату выполнения задачи";
     }
     return null;

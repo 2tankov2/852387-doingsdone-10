@@ -18,7 +18,7 @@ $res_users = mysqli_query($link, $sql_users);
 
 if ($res_users && mysqli_num_rows($res_users)) {
     $users = mysqli_fetch_all($res_users, MYSQLI_ASSOC);
-    print_r($users);
+
     foreach ($users as $user) {
         $user_id = $user['id'];
         $recipients = array();
@@ -27,7 +27,7 @@ if ($res_users && mysqli_num_rows($res_users)) {
         if ($res && mysqli_num_rows($res)) {
             $tasks = mysqli_fetch_all($res, MYSQLI_ASSOC);
             $recipients[$user['email']] = $user['name'];
-            print_r($tasks);
+
             $message = new Swift_Message();
             $message->setSubject("Уведомление от сервиса «Дела в порядке»");
             $message->setFrom(['keks@phpdemo.ru']);
