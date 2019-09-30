@@ -11,54 +11,49 @@ $transport->setPassword("htmlacademy");
 
 $mailer = new Swift_Mailer($transport);
 
-$sql_users = "SELECT u.id, u.name, u.email FROM tasks t
-              LEFT JOIN users u ON u.id = t.user_id
-              WHERE DATE(t.complete_date) = DATE(CURRENT_DATE()) AND t.state = 0";
-$res_users = mysqli_query($link, $sql_users);
+$sql_tasks = "SELECT  t.name AS task_name, DATE_FORMAT(complete_date, '%d.%m.%Y') AS complete_date, u.name AS user_name, email
+    FROM tasks t LEFT JOIN users u ON u.id = t.user_id WHERE complete_date = CURDATE() AND state = 0";
+$result = mysqli_query($link, $sql_tasks);
 
-if ($res_users && mysqli_num_rows($res_users)) {
-    $users = mysqli_fetch_all($res_users, MYSQLI_ASSOC);
+if (!$result) {
+    die(mysqli_error($link));
+}
 
-    foreach ($users as $user) {
-        $user_id = $user['id'];
-        $recipients = array();
-        $sql = "SELECT name, complete_date FROM tasks WHERE DATE(complete_date) = DATE(CURRENT_DATE()) AND state = 0 AND user_id='$user_id'";
-        $res = mysqli_query($link, $sql);
-        if ($res && mysqli_num_rows($res)) {
-            $tasks = mysqli_fetch_all($res, MYSQLI_ASSOC);
-            $recipients[$user['email']] = $user['name'];
+$tasks = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-            $message = new Swift_Message();
-            $message->setSubject("Уведомление от сервиса «Дела в порядке»");
-            $message->setFrom(['keks@phpdemo.ru']);
-            $message->setBcc($recipients);
-            $msg_content = "";
-            $tasks_list = "";
+$emails = array_unique(array_column($tasks, 'email'));
 
-            foreach ($tasks as $task) {
-                $tasks_list .= $task['name'] . " на " . $task['complete_date'] . "  ";
-            }
+$user_name = '';
+$task_name = '';
+$complete_date = '';
+$user_email = '';
+$text = '';
 
-            $count_tasks = count($tasks);
+foreach ($emails as $email) {
+    $user_email = $email;
+    $task_text = '';
+    $count_tasks = 1;
+    foreach ($tasks as $task) {
+        if ($task['email'] === $user_email) {
+            $user_name = $task['user_name'];
+            $done_date = $task['complete_date'];
 
-            $msg_content .= "Уважаемый, " . $user['name'] . ". У вас "
-                         . get_noun_plural_form($count_tasks, 'запланирована', 'запланированы', 'запланированы')
-                         . " " . get_noun_plural_form($count_tasks, 'задачи', 'задачи', 'задачи') . ": " . $tasks_list;
-
-            $message->setBody($msg_content, 'text/plain');
-
-            $result = $mailer->send($message);
-
-            if ($result) {
-                print("Рассылка успешно отправлена");
-            } else {
-                print("Не удалось отправить рассылку");
-            }
+            $correct_textform = get_noun_plural_form($count_tasks, 'запланирована задача ', 'запланированы задачи: ', 'запланированы задачи: ');
+            $task_text .= $task['task_name'] . '  на ' . $task['complete_date'] . '; ';
+            $text = ' Уважаемый (ая),  ' . $task['user_name'] . '. У вас ' . $correct_textform . $task_text;
+            $count_tasks++;
         }
-        if (!$res) {
-            die(mysqli_error($link));
-        }
-    }if (!$res_users) {
-        die(mysqli_error($link));
+    }
+
+    $message = (new Swift_Message("Уведомление от сервиса «Дела в порядке»"))
+        ->setFrom(['keks@phpdemo.ru' => '«Дела в порядке»'])
+        ->setTo([$user_email => $user_name])
+        ->setBody($text, 'text/plain');
+    $result = $mailer->send($message);
+    if ($result) {
+        print("Рассылка успешно отправлена");
+    } else {
+        print("Не удалось отправить рассылку");
     }
 }
+
