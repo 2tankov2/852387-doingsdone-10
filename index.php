@@ -5,10 +5,6 @@ require_once 'helpers.php';
 require_once 'funcs.php';
 require_once 'init.php';
 
-if (!$link) {
-    die('Ошибка подключения к БД');
-}
-
 if (isset($_SESSION['user'])) {
     $user_id = $_SESSION['user']['id'];
 
@@ -36,8 +32,9 @@ if (isset($_SESSION['user'])) {
     }
 
     if (isset($_GET['task_filter'])) {
-        $task_filter = trim($_GET['task_filter']) ?? '';
-        if ($task_filter !== '') {
+        $task_filter = trim($_GET['task_filter']) ?? null;
+        if ($task_filter !== null) {
+            setcookie("task_filter", '',  time() + 3600000);
             $_COOKIE['task_filter'] = $task_filter;
         }
     }
@@ -45,13 +42,14 @@ if (isset($_SESSION['user'])) {
     if (isset($_GET['show_completed'])) {
         $show_completed = intval($_GET['show_completed']) ?? null;
         if ($show_completed !== null) {
+            setcookie("show_complete_tasks", 0, time() + 3600000);
             $_COOKIE['show_complete_tasks'] = $show_completed;
         }
     }
 
     if (isset($_GET['check']) && isset($_GET['task_id'])) {
         $task_id = $_GET['task_id'];
-        $is_checked = $_GET['check'] ?? 0;
+        $is_checked = $_GET['check'];
 
         $sql = "UPDATE tasks SET state = ?  WHERE id = ?";
         $stmt = db_get_prepare_stmt($link, $sql, [$is_checked, $task_id]);

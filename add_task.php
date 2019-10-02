@@ -5,14 +5,10 @@ require_once 'helpers.php';
 require_once 'funcs.php';
 require_once 'init.php';
 
-if (!$link) {
-    die('Ошибка подключения к БД');
-}
-
-$id = $_SESSION['user']['id'];
+$user_id = $_SESSION['user']['id'];
 
 $sql = "SELECT p.id, p.name, COUNT(t.id) AS tasks_count FROM projects p
-LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = '$id' GROUP BY p.id ";
+LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = '$user_id' GROUP BY p.id ";
 $result = mysqli_query($link, $sql);
 
 $project_ids = [];
@@ -75,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]
         );
     } else {
-        $sql = "INSERT INTO tasks (user_id, name, project_id, complete_date, file_url) VALUES ('$id', ?, ?, ?, ?)";
+        $sql = "INSERT INTO tasks (user_id, name, project_id, complete_date, file_url) VALUES ('$user_id', ?, ?, ?, ?)";
         $stmt = db_get_prepare_stmt($link, $sql, $task);
         $res = mysqli_stmt_execute($stmt);
 
@@ -94,9 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     );
 }
 
-$user = $_SESSION['user'];
-$user_name = $_SESSION['user']['name'];
-
 $page_content = include_template(
     'main.php',
     [
@@ -108,8 +101,8 @@ $page_content = include_template(
 $layout_content = include_template(
     'layout.php',
     [
-    'user' => $user,
-    'user_name' => $user_name,
+    'user' => $_SESSION['user'],
+    'user_name' => $_SESSION['user']['name'],
     'content' => $page_content,
     'title' => 'Дела в порядке - Добавление задачи'
     ]

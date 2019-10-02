@@ -1,9 +1,9 @@
 <?php
 
 require_once 'vendor/autoload.php';
-require_once('init.php');
-require_once('funcs.php');
-require_once('helpers.php');
+require_once 'init.php';
+require_once 'funcs.php';
+require_once 'helpers.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $form = $_POST;

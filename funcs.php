@@ -18,7 +18,7 @@ function hoursDiff($completeDate)
 
 /**
  * функция проверяет, истекает ли срок выполнения задачи
- * @return bool true если до окончания срока задачи менее 24 часов, иначе false
+ * @return bool
  */
 function isExpiringTask($date)
 {
@@ -26,9 +26,8 @@ function isExpiringTask($date)
 }
 
 /**
- * возвращает данные из POST
  * @param string $name название
- * @return string если данные есть в POST - они возвращаются, иначе вернётся пустая строка
+ * @return string
  */
 function getPostVal($name)
 {
@@ -63,15 +62,11 @@ function validateLength($text, $MIN_LENGTH)
     $str = trim($text);
     $len = strlen($str);
 
-    if ($len < $MIN_LENGTH) {
-        return "Запишите название задачи";
-    }
-
-    return null;
+    return ($len < $MIN_LENGTH) ? "Запишите название задачи" : null;
 }
 
 /**
- * * валидация выбора названия проекта в форме
+ * валидация выбора названия проекта в форме
  * @param int $projectId идентификатор проекта
  * @param array $allowedList массив существующих идентификаторов проекта
  * @return  в случае, если переданное значение идентификатора не существует среди значений идентификаторов в массиве,
@@ -81,18 +76,11 @@ function validateLength($text, $MIN_LENGTH)
 
 function validateProjects($projectId, $allowedList)
 {
-    $id = $projectId;
-
-    if (!in_array($id, $allowedList)) {
-        return "Указан несуществующий проект";
-    }
-
-    return null;
+    return (!in_array($projectId, $allowedList)) ? "Указан несуществующий проект" : null;
 }
 
 /**
- * проверяет данные из COOKIE
- * @return bool true если данные есть в COOKIE и равны 1, иначе false
+ * @return bool
  */
 
 function isShowCompletedTask()
@@ -116,7 +104,7 @@ function changeDateFormat($date, $format)
 /**
  * определяет какие даты нужно возвращать по каждому фильтру
  * @param string $taskCompleteDate дата завершения задачи
- * @return bool true or false
+ * @return bool
  */
 
 function endDate($taskCompleteDate)
@@ -136,9 +124,8 @@ function endDate($taskCompleteDate)
 }
 
 /**
- * проверяет данные из COOKIE
  * @param string $data название фильтра
- * @return bool true если название фильтра соответствует названию данных из COOKIE, иначе false
+ * @return bool
  */
 
 function isFilterTask($data)
@@ -147,8 +134,7 @@ function isFilterTask($data)
 }
 
 /**
- * проверяет данные из GET
- * @return bool true если нет данных из фильтров, иначе false
+ * @return bool
  */
 
 function isFilter()
@@ -157,8 +143,7 @@ function isFilter()
 }
 
 /**
- * проверяет данные из GET
- * @return bool true если в строке поиска есть данные, иначе false
+ * @return bool
  */
 
 function isSearch()
