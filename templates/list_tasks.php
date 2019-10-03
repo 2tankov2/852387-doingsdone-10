@@ -25,8 +25,8 @@
 <?php else : ?>
 <table class="tasks">
     <?php foreach ($task_list as $task) :?>
-        <?php if (isSearch() or isShowCompletedTask() or (!isShowCompletedTask() && $task['state'] === '0')) : ?>
-            <?php if (isFilter() or (endDate($task['complete_date']))) :?>
+        <?php if (isSearch() or isShowCompletedTask() || (!isShowCompletedTask() && $task['state'] === '0')) : ?>
+            <?php if (isFilter() || (endDate($task['complete_date']))) :?>
                 <?=include_template('_task.php', ['task' => $task]); ?>
             <?php endif; ?>
         <?php endif; ?>

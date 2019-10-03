@@ -8,15 +8,7 @@ require_once 'init.php';
 if (isset($_SESSION['user'])) {
     $user_id = $_SESSION['user']['id'];
 
-    $sql = "SELECT p.id, p.name, COUNT(t.id) AS tasks_count FROM projects p
-    LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = '$user_id' GROUP BY p.id";
-    $result_projects = mysqli_query($link, $sql);
-
-    if (!$result_projects) {
-        die(mysqli_error($link));
-    }
-
-    $projects = mysqli_fetch_all($result_projects, MYSQLI_ASSOC);
+    $projects = getProjects($user_id, $link);
 
     if (!isset($_GET['project_id'])) {
         $sql = "SELECT * FROM tasks WHERE user_id = '$user_id'";

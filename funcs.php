@@ -26,6 +26,24 @@ function isExpiringTask($date)
 }
 
 /**
+ * Получает id пользователя и ресурс соединения, возвращает массив с проектами пользователя
+ * @param string $userId строка с id пользователя
+ * @param object(mysqli) $link ресурс соединения
+ * @return array ассоциативный массив с проектами выбранного пользователя
+ */
+function getProjects($userId, $link)
+{
+    $sql = $sql = "SELECT p.id, p.name, COUNT(t.id) AS tasks_count FROM projects p
+    LEFT JOIN tasks t ON p.id = t.project_id
+    WHERE p.user_id = '$userId' GROUP BY p.id ";
+    $result = mysqli_query($link, $sql);
+    if (!$result) {
+        die(mysqli_error($link));
+    }
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+/**
  * @param string $name название
  * @return string
  */
