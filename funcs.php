@@ -33,7 +33,7 @@ function isExpiringTask($date)
  */
 function getProjects($userId, $link)
 {
-    $sql = $sql = "SELECT p.id, p.name, COUNT(t.id) AS tasks_count FROM projects p
+    $sql = "SELECT p.id, p.name, COUNT(t.id) AS tasks_count FROM projects p
     LEFT JOIN tasks t ON p.id = t.project_id
     WHERE p.user_id = '$userId' GROUP BY p.id ";
     $result = mysqli_query($link, $sql);
@@ -44,12 +44,34 @@ function getProjects($userId, $link)
 }
 
 /**
+ * возвращает массив с задачами
+ * @param string $sql запрос в базу данных
+ * @param object(mysqli) $link ресурс соединения
+ * @return array ассоциативный массив с задачами
+ */
+
+function getTasks($sql, $link, $data)
+{
+    if (!empty($data)) {
+        $stmt = db_get_prepare_stmt($link, $sql, $data);
+        mysqli_stmt_execute($stmt);
+        $result_tasks = mysqli_stmt_get_result($stmt);
+    } else {
+        $result_tasks = mysqli_query($link, $sql);
+        if (!$result_tasks) {
+            die(mysqli_error($link));
+        }
+    }
+    return mysqli_fetch_all($result_tasks, MYSQLI_ASSOC);
+}
+
+/**
  * @param string $name название
  * @return string
  */
 function getPostVal($name)
 {
-    return $_POST[$name] ?? "";
+    return isset($_POST[$name]) ? strip_tags($_POST[$name]) : "";
 }
 
 /**
@@ -138,6 +160,8 @@ function endDate($taskCompleteDate)
         case "late":
             $date = changeDateFormat("now", 'Y-m-d');
             return $taskCompleteDate < $date;
+        default:
+            return $taskCompleteDate;
     }
 }
 
@@ -157,7 +181,7 @@ function isFilterTask($data)
 
 function isFilter()
 {
-    return empty($_GET['task_filter']);
+    return !isset($_GET['task_filter']);
 }
 
 /**
@@ -167,4 +191,15 @@ function isFilter()
 function isSearch()
 {
     return isset($_GET['q']);
+}
+
+/**
+ * удаляет специальные HTML символы
+ * @param string $text
+ * @return string
+*/
+
+function deleteHtmlSpecialChars($text)
+{
+     return strip_tags($text);
 }

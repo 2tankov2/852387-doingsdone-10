@@ -11,11 +11,15 @@ if (isset($_SESSION['user'])) {
     $projects = getProjects($user_id, $link);
 
     if (!isset($_GET['project_id'])) {
-        $sql = "SELECT * FROM tasks WHERE user_id = '$user_id'";
+        $sql = "SELECT * FROM tasks
+                WHERE user_id = '$user_id'";
+
         $result_tasks = mysqli_query($link, $sql);
     } else {
         $project_id = mysqli_real_escape_string($link, $_GET['project_id']);
-        $sql = "SELECT * FROM tasks WHERE project_id = '%s' AND user_id = '$user_id'";
+        $sql = "SELECT * FROM tasks
+                WHERE project_id = '%s' AND user_id = '$user_id'";
+
         $sql = sprintf($sql, $project_id);
         $result_tasks = mysqli_query($link, $sql);
         if (!$result_tasks) {
@@ -43,7 +47,9 @@ if (isset($_SESSION['user'])) {
         $task_id = $_GET['task_id'];
         $is_checked = $_GET['check'];
 
-        $sql = "UPDATE tasks SET state = ?  WHERE id = ?";
+        $sql = "UPDATE tasks SET state = ?
+                WHERE id = ?";
+
         $stmt = db_get_prepare_stmt($link, $sql, [$is_checked, $task_id]);
         mysqli_stmt_execute($stmt);
         $result_tasks = mysqli_stmt_get_result($stmt);
@@ -65,9 +71,6 @@ if (isset($_SESSION['user'])) {
 
     $tasks = mysqli_fetch_all($result_tasks, MYSQLI_ASSOC);
 
-    $user = $_SESSION['user'];
-    $user_name = $_SESSION['user']['name'];
-
     $tasks_content = include_template(
         'list_tasks.php',
         [
@@ -86,8 +89,8 @@ if (isset($_SESSION['user'])) {
     $layout_content = include_template(
         'layout.php',
         [
-        'user' => $user,
-        'user_name' => $user_name,
+        'user' => $_SESSION['user'],
+        'user_name' => $_SESSION['user']['name'],
         'content' => $page_content,
         'title' => 'Дела в порядке - Главная страница'
         ]

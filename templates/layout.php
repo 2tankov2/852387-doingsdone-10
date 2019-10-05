@@ -30,7 +30,7 @@
 
                     <div class="main-header__side-item user-menu">
                         <div class="user-menu__data">
-                            <p><?=strip_tags($user_name); ?></p>
+                            <p><?=deleteHtmlSpecialChars($user_name); ?></p>
 
                             <a href="logout.php">Выйти</a>
                         </div>

@@ -24,7 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         $project_name = mysqli_real_escape_string($link, $project['name']);
-        $sql = "SELECT user_id, name FROM projects WHERE name = '$project_name' AND user_id = '$user_id'";
+        $sql = "SELECT user_id, name FROM projects
+                WHERE name = '$project_name' AND user_id = '$user_id'";
+
         $res = mysqli_query($link, $sql);
 
         if (mysqli_num_rows($res) > 0) {

@@ -25,7 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         $email = mysqli_real_escape_string($link, $form['email']);
-        $sql = "SELECT id FROM users WHERE email = '$email'";
+        $sql = "SELECT id
+                FROM users
+                WHERE email = '$email'";
         $res = mysqli_query($link, $sql);
 
         if (mysqli_num_rows($res) > 0) {

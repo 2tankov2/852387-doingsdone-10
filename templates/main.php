@@ -5,7 +5,7 @@
             <?php foreach ($projects as $project) : ?>
                 <li class="main-navigation__list-item <?=($_GET['project_id'] === $project['id']) ? 'main-navigation__list-item--active' : ''; ?>">
                     <a class="main-navigation__list-item-link" href="/index.php?project_id=<?=$project['id']; ?>">
-                        <?=htmlspecialchars($project['name']); ?>
+                        <?=deleteHtmlSpecialChars($project['name']); ?>
                     </a>
                     <span class="main-navigation__list-item-count"><?=$project['tasks_count']; ?></span>
                 </li>

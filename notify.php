@@ -12,14 +12,10 @@ $transport->setPassword("htmlacademy");
 $mailer = new Swift_Mailer($transport);
 
 $sql_tasks = "SELECT  t.name AS task_name, DATE_FORMAT(complete_date, '%d.%m.%Y') AS complete_date, u.name AS user_name, email
-    FROM tasks t LEFT JOIN users u ON u.id = t.user_id WHERE complete_date = CURDATE() AND state = 0";
-$result = mysqli_query($link, $sql_tasks);
+              FROM tasks t LEFT JOIN users u ON u.id = t.user_id
+              WHERE /*complete_date = CURDATE() AND*/ state = 0";
 
-if (!$result) {
-    die(mysqli_error($link));
-}
-
-$tasks = mysqli_fetch_all($result, MYSQLI_ASSOC);
+$tasks = getTasks($sql_tasks, $link);
 
 $emails = array_unique(array_column($tasks, 'email'));
 
