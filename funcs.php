@@ -44,28 +44,6 @@ function getProjects($userId, $link)
 }
 
 /**
- * возвращает массив с задачами
- * @param string $sql запрос в базу данных
- * @param object(mysqli) $link ресурс соединения
- * @return array ассоциативный массив с задачами
- */
-
-function getTasks($sql, $link, $data)
-{
-    if (!empty($data)) {
-        $stmt = db_get_prepare_stmt($link, $sql, $data);
-        mysqli_stmt_execute($stmt);
-        $result_tasks = mysqli_stmt_get_result($stmt);
-    } else {
-        $result_tasks = mysqli_query($link, $sql);
-        if (!$result_tasks) {
-            die(mysqli_error($link));
-        }
-    }
-    return mysqli_fetch_all($result_tasks, MYSQLI_ASSOC);
-}
-
-/**
  * @param string $name название
  * @return string
  */
