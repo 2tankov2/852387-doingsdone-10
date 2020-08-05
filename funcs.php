@@ -103,7 +103,7 @@ function validateProjects($projectId, $allowedList)
 
 function isShowCompletedTask()
 {
-    return $_COOKIE['show_complete_tasks'] === 1;
+    return !empty($_COOKIE['show_complete_tasks']);
 }
 
 /**

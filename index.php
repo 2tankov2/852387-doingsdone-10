@@ -7,7 +7,9 @@ require_once 'init.php';
 
 if (isset($_SESSION['user'])) {
     $user_id = $_SESSION['user']['id'];
-
+"<pre>";
+var_dump($_GET);
+"<pre>";
     $projects = getProjects($user_id, $link);
 
     if (!isset($_GET['project_id'])) {
